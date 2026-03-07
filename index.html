@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Coding — Experimental Interactions</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Three.js r128 with working CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    
+    <!-- Background Style Switcher -->
+    <div class="bg-switcher">
+        <button id="bgSwitchBtn" class="bg-switch-btn">
+            <span id="bgStyleName">Original</span>
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-links">
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#contact" class="nav-link">Contact</a>
+            <a href="#resume" class="nav-link">Resume</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div id="threejs-hero"></div>
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </section>
+
+    <!-- Interactive Grid Section -->
+    <section class="grid-section" id="projects">
+        <h2 class="section-title">Projekte</h2>
+        <div class="interactive-grid">
+            <div class="grid-item project-preview" data-color="#4A5C3E" data-project="iks">
+                <div class="grid-image" style="background-image: url('iks/iks.foto.png');"></div>
+                <div class="grid-content">
+                    <span class="grid-number">01</span>
+                    <h3>IKS</h3>
+                    <p class="grid-subtitle">Ausstellungsgestaltung</p>
+                </div>
+            </div>
+            <div class="grid-item project-preview" data-color="#A8C69F" data-project="datenvisualisierung">
+                <div class="grid-image" style="background-image: url('datenvisualisierung/datenvisualisierung.foto.png');"></div>
+                <div class="grid-content">
+                    <span class="grid-number">02</span>
+                    <h3>Datenvisualisierung</h3>
+                    <p class="grid-subtitle">Simulation</p>
+                </div>
+            </div>
+            <div class="grid-item project-preview" data-color="#C3756B" data-project="interface">
+                <div class="grid-image" style="background-image: url('interface/interface.foto.png');"></div>
+                <div class="grid-content">
+                    <span class="grid-number">03</span>
+                    <h3>Interface</h3>
+                    <p class="grid-subtitle">Interaktionsdesign</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Text Reveal Section -->
+    <section class="text-section">
+        <div class="text-reveal">
+            <p class="reveal-text">
+                Design ist nicht nur das was man sieht,
+                sondern das was man fühlt.
+            </p>
+        </div>
+    </section>
+
+    <!-- Letter Tumble Effect (magnetic repulsion) -->
+    <section class="letter-tumble-section">
+        <div class="letter-tumble-container">
+            <h2 class="letter-tumble-text" id="letterTumbleText">TUMBLE</h2>
+            <p class="effect-hint">Buchstaben werden weggedrückt</p>
+        </div>
+    </section>
+
+    <!-- 3D Cube Rotation Effect with Three.js -->
+    <section class="cube-rotation-section" id="threejsSection">
+        <div id="threejs-container"></div>
+        <div class="threejs-overlay">
+            <p class="effect-hint">3D-Rotation wie Würfel (WebGL)</p>
+        </div>
+    </section>
+
+    <!-- Experimental Card Section -->
+    <section class="cards-section" id="projects">
+        <h2 class="section-title">Projekte</h2>
+        
+        <!-- Project 1: Ausstellungsgestaltung -->
+        <div class="project-detail">
+            <div class="project-header">
+                <h3 class="project-title">Ausstellungsgestaltung</h3>
+                <p class="project-subtitle">IKS — Interaktive Kunst Simulation</p>
+            </div>
+            
+            <div class="project-content">
+                <div class="project-video-container">
+                    <video class="project-video" controls>
+                        <source src="projekte_material/simulation/iks/IKS_Video_Cosi, Chuz and Yannik .mp4" type="video/mp4">
+                        Dein Browser unterstützt keine Videos.
+                    </video>
+                </div>
+                
+                <div class="project-description">
+                    <p>Gestaltung einer interaktiven Kunstausstellung mit immersiven digitalen Elementen.</p>
+                </div>
+            </div>
+        </div>
+        
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>Made with ❤️ & Code</p>
+            <div class="social-links">
+                <a href="#" class="social-link">GitHub</a>
+                <a href="#" class="social-link">Instagram</a>
+                <a href="#" class="social-link">Twitter</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

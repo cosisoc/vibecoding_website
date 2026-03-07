@@ -67,35 +67,8 @@ hoverElements.forEach(el => {
     });
 });
 
-// =====================================
-// BACKGROUND STYLE SWITCHER
-// =====================================
-const bgStyles = [
-    { name: 'Original', class: 'bg-original' },
-    { name: 'Gradient', class: 'bg-gradient' },
-    { name: 'Grid', class: 'bg-grid' },
-    { name: 'Mesh', class: 'bg-mesh' },
-    { name: 'Grain', class: 'bg-grain' }
-];
-
-let currentBgIndex = 0;
-const bgSwitchBtn = document.getElementById('bgSwitchBtn');
-const bgStyleName = document.getElementById('bgStyleName');
-
-// Set initial style
-document.body.classList.add(bgStyles[currentBgIndex].class);
-
-bgSwitchBtn.addEventListener('click', () => {
-    // Remove current class
-    document.body.classList.remove(bgStyles[currentBgIndex].class);
-    
-    // Move to next style (loop back to start)
-    currentBgIndex = (currentBgIndex + 1) % bgStyles.length;
-    
-    // Add new class and update label
-    document.body.classList.add(bgStyles[currentBgIndex].class);
-    bgStyleName.textContent = bgStyles[currentBgIndex].name;
-});
+// Background: grid is the default, switcher removed
+document.body.classList.add('bg-grid');
 
 // =====================================
 // INTERACTIVE GRID COLORS
@@ -361,6 +334,8 @@ if (letterTumbleSection) {
 const heroContainer = document.getElementById('threejs-hero');
 
 if (heroContainer && typeof THREE !== 'undefined') {
+    // Only these words should respond to hover/rotation
+    const interactiveWords = new Set(['cosima', 'interactiondesign']);
     // Scene setup
     const heroScene = new THREE.Scene();
     
@@ -402,133 +377,140 @@ if (heroContainer && typeof THREE !== 'undefined') {
     const text1 = 'Hi im Cosima';
     const spacing1 = 5.5;
     
-    // Load font and create text geometry
+    // Load font and prepare hero text builder
     const heroLoader = new THREE.FontLoader();
+    let heroFont = null;
+    let heroFontLoaded = false;
+
     heroLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', (font) => {
-        
-        const letterSpacing = 0.7; // Abstand zwischen Buchstaben innerhalb eines Wortes
-        const wordSpacing = 3; // Abstand zwischen Wörtern
-        
-        function createTextLine(text, yPos, color, fontSize) {
-            const words = text.split(' ');
-            
-            // Erst alle Breiten berechnen
-            const wordData = [];
-            let totalWidth = 0;
-            
-            words.forEach((word, wordIndex) => {
-                const charData = [];
-                let wordWidth = 0;
-                
-                word.split('').forEach((char) => {
-                    const tempGeometry = new THREE.TextGeometry(char, {
-                        font: font,
-                        size: fontSize,
-                        height: 2.5,
-                        curveSegments: 12,
-                        bevelEnabled: true,
-                        bevelThickness: 0.4,
-                        bevelSize: 0.25,
-                        bevelOffset: 0,
-                        bevelSegments: 5
-                    });
-                    tempGeometry.computeBoundingBox();
-                    const width = tempGeometry.boundingBox.max.x - tempGeometry.boundingBox.min.x;
-                    charData.push({ char, width });
-                    wordWidth += width;
-                });
-                
-                wordData.push({ charData, wordWidth });
-                totalWidth += wordWidth;
-                
-                // Spacing zwischen Wörtern (aber nicht nach dem letzten Wort)
-                if (wordIndex < words.length - 1) {
-                    totalWidth += wordSpacing;
-                }
-                
-                // Spacing zwischen Buchstaben innerhalb des Wortes
-                const letterSpacingTotal = letterSpacing * (word.length - 1);
-                totalWidth += letterSpacingTotal;
-            });
-            
-            // Startposition (zentriert)
-            let currentX = -totalWidth / 2;
-            
-            // Jetzt Buchstaben erstellen
-            wordData.forEach((word, wordIndex) => {
-                word.charData.forEach((charInfo, charIndex) => {
-                    const textGeometry = new THREE.TextGeometry(charInfo.char, {
-                        font: font,
-                        size: fontSize,
-                        height: 2.5,
-                        curveSegments: 12,
-                        bevelEnabled: true,
-                        bevelThickness: 0.4,
-                        bevelSize: 0.25,
-                        bevelOffset: 0,
-                        bevelSegments: 5
-                    });
-                    
-                    textGeometry.computeBoundingBox();
-                    const charWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
-                    const bbox = textGeometry.boundingBox.clone();
-                    
-                    // Für Rotation muss die Geometrie komplett zentriert sein
-                    // Aber wir merken uns das Offset zur Baseline
-                    const baselineOffset = bbox.min.y; // Wie weit unter dem Zentrum ist die Baseline
-                    const centerY = (bbox.max.y + bbox.min.y) / 2;
-                    
-                    textGeometry.center();
-                    
-                    const material = new THREE.MeshStandardMaterial({
-                        color: color,
-                        roughness: 0.4,
-                        metalness: 0.1
-                    });
-                    
-                    const mesh = new THREE.Mesh(textGeometry, material);
-                    mesh.position.x = currentX + charWidth / 2;
-                    // yPos ist die Baseline, wir müssen die Höhe zum Zentrum addieren
-                    mesh.position.y = yPos + centerY;
-                    mesh.rotation.set(0, 0, 0);
-                    
-                    mesh.userData = {
-                        char: charInfo.char,
-                        originalX: mesh.position.x,
-                        originalY: mesh.position.y,
-                        isRotating: false,
-                        hasRotated: false,
-                        rotationStart: 0,
-                        rotationTarget: 0,
-                        rotationProgress: 0,
-                        rotationAxis: 'y'
-                    };
-                    
-                    heroScene.add(mesh);
-                    heroLetterMeshes.push(mesh);
-                    
-                    // Bewege currentX zur rechten Kante dieses Buchstabens
-                    currentX += charWidth;
-                    
-                    // Letter Spacing nur zwischen Buchstaben, nicht nach dem letzten
-                    if (charIndex < word.charData.length - 1) {
-                        currentX += letterSpacing;
+        heroFont = font;
+        heroFontLoaded = true;
+
+        // Expose a rebuild function on window so other code can request hero text updates
+        window.rebuildHeroText = function(lang) {
+            if (!heroFontLoaded) return;
+
+            // Remove old meshes
+            while (heroLetterMeshes.length) {
+                const m = heroLetterMeshes.pop();
+                heroScene.remove(m);
+                if (m.geometry) m.geometry.dispose();
+                if (m.material) {
+                    if (Array.isArray(m.material)) {
+                        m.material.forEach(mat => mat.dispose());
+                    } else {
+                        m.material.dispose();
                     }
-                });
-                
-                // Nach jedem Wort (außer dem letzten) Word-Spacing hinzufügen
-                if (wordIndex < wordData.length - 1) {
-                    currentX += wordSpacing;
                 }
-            });
-        }
-        
-        // Erste Zeile
-        createTextLine(text1, 3, 0x4A5C3E, 5);
-        
-        // Zweite Zeile
-        const text2 = 'a interactiondesign student';
-        createTextLine(text2, -3, 0xC3756B, 3.5);
+            }
+
+            const letterSpacing = 0.7;
+            const wordSpacing = 3;
+
+            function createTextLine(text, yPos, color, fontSize) {
+                const words = text.split(' ');
+                const wordData = [];
+                let totalWidth = 0;
+
+                words.forEach((word, wordIndex) => {
+                    const charData = [];
+                    let wordWidth = 0;
+
+                    word.split('').forEach((char) => {
+                        const tempGeometry = new THREE.TextGeometry(char, {
+                            font: heroFont,
+                            size: fontSize,
+                            height: 2.5,
+                            curveSegments: 12,
+                            bevelEnabled: true,
+                            bevelThickness: 0.4,
+                            bevelSize: 0.25,
+                            bevelOffset: 0,
+                            bevelSegments: 5
+                        });
+                        tempGeometry.computeBoundingBox();
+                        const width = tempGeometry.boundingBox.max.x - tempGeometry.boundingBox.min.x;
+                        charData.push({ char, width });
+                        wordWidth += width;
+                    });
+
+                    wordData.push({ charData, wordWidth });
+                    totalWidth += wordWidth;
+
+                    if (wordIndex < words.length - 1) totalWidth += wordSpacing;
+                    const letterSpacingTotal = letterSpacing * (word.length - 1);
+                    totalWidth += letterSpacingTotal;
+                });
+
+                let currentX = -totalWidth / 2;
+
+                wordData.forEach((word, wordIndex) => {
+                    const currentWordText = words[wordIndex];
+                    word.charData.forEach((charInfo, charIndex) => {
+                        const textGeometry = new THREE.TextGeometry(charInfo.char, {
+                            font: heroFont,
+                            size: fontSize,
+                            height: 2.5,
+                            curveSegments: 12,
+                            bevelEnabled: true,
+                            bevelThickness: 0.4,
+                            bevelSize: 0.25,
+                            bevelOffset: 0,
+                            bevelSegments: 5
+                        });
+
+                        textGeometry.computeBoundingBox();
+                        const charWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
+                        const bbox = textGeometry.boundingBox.clone();
+                        const centerY = (bbox.max.y + bbox.min.y) / 2;
+                        textGeometry.center();
+
+                        const material = new THREE.MeshStandardMaterial({
+                            color: color,
+                            roughness: 0.4,
+                            metalness: 0.1
+                        });
+
+                        const mesh = new THREE.Mesh(textGeometry, material);
+                        mesh.position.x = currentX + charWidth / 2;
+                        mesh.position.y = yPos + centerY;
+                        mesh.rotation.set(0, 0, 0);
+
+                        mesh.userData = {
+                            char: charInfo.char,
+                            word: currentWordText,
+                            wordLower: currentWordText.toLowerCase(),
+                            originalX: mesh.position.x,
+                            originalY: mesh.position.y,
+                            isRotating: false,
+                            hasRotated: false,
+                            rotationStart: 0,
+                            rotationTarget: 0,
+                            rotationProgress: 0,
+                            rotationAxis: 'y'
+                        };
+
+                        heroScene.add(mesh);
+                        heroLetterMeshes.push(mesh);
+
+                        currentX += charWidth;
+                        if (charIndex < word.charData.length - 1) currentX += letterSpacing;
+                    });
+
+                    if (wordIndex < wordData.length - 1) currentX += wordSpacing;
+                });
+            }
+
+            // Choose texts based on language
+            const heroText1 = (lang === 'DE') ? 'Hi ich bin Cosima' : 'Hi im Cosima';
+            const heroText2 = (lang === 'DE') ? 'eine Interactiondesign-Studentin' : 'a interactiondesign student';
+
+            createTextLine(heroText1, 3, 0x4A5C3E, 5);
+            createTextLine(heroText2, -3, 0xC3756B, 3.5);
+        };
+
+        // Build initial hero text (default language)
+        if (window.rebuildHeroText) window.rebuildHeroText(currentLang);
     });
     
     // Raycaster for precise mouse detection
@@ -565,7 +547,12 @@ if (heroContainer && typeof THREE !== 'undefined') {
         // Trigger rotation for intersected letter
         if (intersects.length > 0) {
             const hoveredMesh = intersects[0].object;
-            
+
+            // Only allow rotation for explicitly interactive words (substring match)
+            const wl = (hoveredMesh.userData.wordLower || '').toLowerCase();
+            const allowed = Array.from(interactiveWords).some(k => wl.includes(k));
+            if (!allowed) return;
+
             if (!hoveredMesh.userData.isRotating && !hoveredMesh.userData.hasRotated) {
                 hoveredMesh.userData.isRotating = true;
                 hoveredMesh.userData.hasRotated = true;
@@ -582,7 +569,8 @@ if (heroContainer && typeof THREE !== 'undefined') {
                     hoveredMesh.userData.rotationStart = hoveredMesh.rotation.x;
                     hoveredMesh.userData.rotationTarget = hoveredMesh.rotation.x + Math.PI * 2 * -Math.sign(deltaY);
                 }
-                
+                // hover rotations are a bit snappier
+                hoveredMesh.userData.rotationSpeed = 0.08;
                 hoveredMesh.userData.rotationProgress = 0;
             }
         }
@@ -597,15 +585,37 @@ if (heroContainer && typeof THREE !== 'undefined') {
         
         heroLetterMeshes.forEach((mesh) => {
             if (mesh.userData.isRotating) {
-                mesh.userData.rotationProgress += 0.08;
+                const rotSpeed = typeof mesh.userData.rotationSpeed === 'number' ? mesh.userData.rotationSpeed : 0.06;
+                mesh.userData.rotationProgress += rotSpeed;
                 
                 if (mesh.userData.rotationProgress >= 1) {
-                    mesh.userData.isRotating = false;
-                    mesh.userData.rotationProgress = 0;
-                    if (mesh.userData.rotationAxis === 'y') {
-                        mesh.rotation.y = mesh.userData.rotationTarget;
+                    // If this was an auto-rotation, perform return phase (out -> back)
+                    if (mesh.userData.isAuto && !mesh.userData.autoReturning) {
+                        // snap to target to ensure clean start for return
+                        if (mesh.userData.rotationAxis === 'y') {
+                            mesh.rotation.y = mesh.userData.rotationTarget;
+                        } else {
+                            mesh.rotation.x = mesh.userData.rotationTarget;
+                        }
+
+                        // prepare return
+                        mesh.userData.autoReturning = true;
+                        mesh.userData.rotationStart = mesh.userData.rotationTarget;
+                        mesh.userData.rotationTarget = mesh.userData.autoOrig !== undefined ? mesh.userData.autoOrig : mesh.userData.rotationStart;
+                        mesh.userData.rotationProgress = 0;
+                        // keep isRotating true to animate return
                     } else {
-                        mesh.rotation.x = mesh.userData.rotationTarget;
+                        // Normal end of rotation (or auto return finished)
+                        mesh.userData.isRotating = false;
+                        mesh.userData.rotationProgress = 0;
+                        if (mesh.userData.rotationAxis === 'y') {
+                            mesh.rotation.y = mesh.userData.rotationTarget;
+                        } else {
+                            mesh.rotation.x = mesh.userData.rotationTarget;
+                        }
+                        // clear auto flags
+                        mesh.userData.isAuto = false;
+                        mesh.userData.autoReturning = false;
                     }
                 } else {
                     const t = mesh.userData.rotationProgress;
@@ -643,6 +653,116 @@ if (heroContainer && typeof THREE !== 'undefined') {
         heroCamera.updateProjectionMatrix();
         heroRenderer.setSize(window.innerWidth, window.innerHeight * 0.5);
     });
+
+    // =====================================
+    // AUTO-ROTATE ON IDLE (7s) - relaxed timings
+    // =====================================
+    let idleTimeoutId = null;
+    const idleDelay = 7000; // 7 seconds
+    let isAutoRotating = false;
+    let autoSeqTimer = null;
+
+    function stopAutoRotate() {
+        isAutoRotating = false;
+        if (autoSeqTimer) {
+            clearTimeout(autoSeqTimer);
+            autoSeqTimer = null;
+        }
+        // For meshes currently auto-tilted, animate them back quickly.
+        // For others, clear auto flags so hover works as normal.
+        heroLetterMeshes.forEach(m => {
+            const ud = m.userData || {};
+            if (ud.isAuto && !ud.autoReturning) {
+                // start a quick return animation from current angle to original
+                ud.autoReturning = true;
+                ud.rotationStart = m.rotation.y;
+                ud.rotationTarget = (ud.autoOrig !== undefined) ? ud.autoOrig : ud.rotation.y;
+                ud.rotationProgress = 0;
+                ud.rotationSpeed = 0.12; // quick return
+                ud.isRotating = true;
+                // keep isAuto true until return finishes (animate loop clears it)
+            } else {
+                if (!ud.isRotating) ud.hasRotated = false;
+                // clear non-essential auto flags
+                ud.isAuto = false;
+                // keep autoOrig until any returning finishes
+                if (!ud.autoReturning) {
+                    // remove custom speed if present
+                    if (ud.rotationSpeed) delete ud.rotationSpeed;
+                }
+            }
+        });
+    }
+
+    function startAutoRotate() {
+        if (isAutoRotating) return;
+        if (!heroLetterMeshes || heroLetterMeshes.length === 0) return;
+        isAutoRotating = true;
+
+        let idx = 0;
+
+        function step() {
+            if (!isAutoRotating) return;
+
+            // If we've completed a full pass, wait a longer pause then restart
+            if (idx >= heroLetterMeshes.length) {
+                idx = 0;
+                autoSeqTimer = setTimeout(step, 4000); // 4s pause after full caption
+                return;
+            }
+
+            const mesh = heroLetterMeshes[idx];
+
+            // Skip if currently being rotated by hover
+            if (!mesh.userData.isRotating) {
+                // Gentle outward tilt then return so letters stay readable
+                const angle = Math.PI / 9; // ~20 degrees
+                mesh.userData.isRotating = true;
+                mesh.userData.isAuto = true;
+                mesh.userData.autoReturning = false;
+                mesh.userData.hasRotated = true;
+                mesh.userData.rotationAxis = 'y';
+                mesh.userData.autoOrig = mesh.rotation.y;
+                mesh.userData.rotationStart = mesh.rotation.y;
+                mesh.userData.rotationTarget = mesh.rotation.y + angle; // tilt out
+                mesh.userData.rotationProgress = 0;
+                mesh.userData.rotationSpeed = 0.035; // slower, relaxed animation
+            }
+
+            // Determine delay to next letter; longer between words
+            const next = heroLetterMeshes[idx + 1];
+            let delay = 180; // ms between letters (relaxed)
+            if (next) {
+                const curWord = (mesh.userData.word || '').toString();
+                const nextWord = (next.userData.word || '').toString();
+                if (curWord !== nextWord) delay = 600; // longer pause between words
+            } else {
+                // end of line -> pause then will hit full-pass branch
+                delay = 600;
+            }
+
+            idx += 1;
+            autoSeqTimer = setTimeout(step, delay);
+        }
+
+        step();
+    }
+
+    function resetIdleTimer() {
+        if (idleTimeoutId) clearTimeout(idleTimeoutId);
+        // stop auto-rotate when user moves mouse
+        stopAutoRotate();
+        idleTimeoutId = setTimeout(() => {
+            startAutoRotate();
+        }, idleDelay);
+    }
+
+    // Start the idle timer for the first time
+    resetIdleTimer();
+
+    // Cancel or reset when user moves mouse or touches
+    document.addEventListener('mousemove', resetIdleTimer, { passive: true });
+    document.addEventListener('touchstart', resetIdleTimer, { passive: true });
 }
 
 // =====================================
@@ -851,6 +971,128 @@ if (threejsContainer && typeof THREE !== 'undefined') {
             camera.aspect = threejsContainer.clientWidth / threejsContainer.clientHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(threejsContainer.clientWidth, threejsContainer.clientHeight);
+        }
+    });
+}
+
+// =====================================
+// EN / DE LANGUAGE TOGGLE (with flags)
+// =====================================
+const langToggleBtn = document.getElementById('langToggle');
+
+// Translation dictionary
+const translations = {
+    EN: {
+        nav: ['Projects', 'Resume'],
+        contact: 'Contact me',
+        hero1: 'Hi im Cosima',
+        hero2: 'a interactiondesign student',
+        projectsTitle: 'Projects'
+    },
+    DE: {
+        nav: ['Projekte', 'Lebenslauf'],
+        contact: 'Kontaktiere mich',
+        hero1: 'Hi ich bin Cosima',
+        hero2: 'eine Interactiondesign-Studentin',
+        projectsTitle: 'Projekte'
+    }
+};
+
+let currentLang = 'EN';
+
+function setLangButtonUI(lang) {
+    if (!langToggleBtn) return;
+    if (lang === 'EN') {
+        langToggleBtn.innerHTML = '🇬🇧 EN';
+    } else {
+        langToggleBtn.innerHTML = '🇩🇪 DE';
+    }
+}
+
+function applyLanguage(lang) {
+    currentLang = lang;
+    setLangButtonUI(lang);
+
+    // Update nav center links (assumes two center links)
+    const centerLinks = document.querySelectorAll('.nav-center .nav-link');
+    if (centerLinks && centerLinks.length >= 2) {
+        centerLinks[0].textContent = translations[lang].nav[0];
+        centerLinks[1].textContent = translations[lang].nav[1];
+    }
+
+    // Update contact pill
+    const contactBtn = document.querySelector('.nav-contact-btn');
+    if (contactBtn) contactBtn.textContent = translations[lang].contact;
+
+    // Update projects section title(s)
+    const gridTitle = document.querySelector('.grid-section .section-title');
+    if (gridTitle) gridTitle.textContent = translations[lang].projectsTitle;
+
+    // Rebuild Three.js hero text if possible
+    if (typeof rebuildHeroText === 'function') {
+        rebuildHeroText(lang);
+    }
+}
+
+if (langToggleBtn) {
+    setLangButtonUI(currentLang);
+    langToggleBtn.addEventListener('click', () => {
+        const next = currentLang === 'EN' ? 'DE' : 'EN';
+        applyLanguage(next);
+    });
+}
+
+// Apply initial language to update UI text
+applyLanguage(currentLang);
+
+// =====================================
+// CONTACT SECTION (bottom) + COPY EMAIL
+// =====================================
+const contactBtn = document.querySelector('.nav-contact-btn');
+const copyEmailBtn = document.getElementById('copyEmailBtn');
+const contactEmailEl = document.getElementById('contactEmail');
+
+if (contactBtn) {
+    contactBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.getElementById('contact');
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // focus the copy button shortly after scroll
+            setTimeout(() => {
+                const btn = document.getElementById('copyEmailBtn');
+                if (btn) btn.focus();
+            }, 600);
+        }
+    });
+}
+
+if (copyEmailBtn && contactEmailEl) {
+    copyEmailBtn.addEventListener('click', async () => {
+        const email = contactEmailEl.textContent.trim();
+        try {
+            await navigator.clipboard.writeText(email);
+            copyEmailBtn.classList.add('copied');
+            copyEmailBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyEmailBtn.classList.remove('copied');
+                copyEmailBtn.textContent = 'Copy email';
+            }, 2000);
+        } catch (err) {
+            // fallback for older browsers
+            const ta = document.createElement('textarea');
+            ta.value = email;
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); }
+            catch (e) {}
+            document.body.removeChild(ta);
+            copyEmailBtn.classList.add('copied');
+            copyEmailBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyEmailBtn.classList.remove('copied');
+                copyEmailBtn.textContent = 'Copy email';
+            }, 2000);
         }
     });
 }

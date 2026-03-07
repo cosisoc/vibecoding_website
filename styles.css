@@ -14,6 +14,18 @@
     
     --transition-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
     --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Typographic scale (semantic tokens) */
+    --fs-xs: 12px;   /* captions, micro copy */
+    --fs-sm: 14px;   /* fine print, helper text */
+    --fs-md: 16px;   /* body copy baseline */
+    --fs-lg: 30px;   /* UI base, small buttons */
+    --fs-xl: 20px;   /* prominent UI elements, nav links */
+    --fs-2xl: 24px;  /* primary CTA, important buttons */
+    --fs-3xl: 28px;  /* prominent titles outside hero */
+
+    /* Backwards-compatible alias used across the stylesheet */
+    --ui-font-size: var(--fs-lg);
 }
 
 * {
@@ -29,6 +41,7 @@ body {
     overflow-x: hidden;
     cursor: none; /* Custom cursor */
     position: relative;
+    font-size: var(--fs-md); /* baseline body size */
 }
 
 /* ====================================
@@ -122,7 +135,7 @@ body.bg-grain::before {
 /* Background Switcher Button */
 .bg-switcher {
     position: fixed;
-    top: 20px;
+    bottom: 20px;
     right: 20px;
     z-index: 10000;
 }
@@ -134,7 +147,7 @@ body.bg-grain::before {
     padding: 12px 24px;
     border-radius: 25px;
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: var(--fs-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s var(--transition-smooth);
@@ -189,26 +202,144 @@ html {
     top: 0;
     left: 0;
     right: 0;
-    padding: 2rem 4rem;
+    padding: 1.2rem 3rem;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     z-index: 1000;
-    background: linear-gradient(180deg, rgba(245,245,245,0.95) 0%, rgba(245,245,245,0) 100%);
+    background: linear-gradient(180deg, rgba(245,245,245,0.97) 0%, rgba(245,245,245,0) 100%);
     backdrop-filter: blur(10px);
 }
 
-.nav-links {
+.nav-left {
+    display: flex;
+    align-items: center;
+    min-width: 120px;
+}
+
+.nav-center {
     display: flex;
     gap: 3rem;
+    align-items: center;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    min-width: 120px;
+    justify-content: flex-end;
+}
+
+/* EN/GER toggle */
+.lang-toggle {
+    background: none;
+    border: 1.5px solid var(--color-dark);
+    color: var(--color-dark);
+    font-family: var(--font-body);
+    font-size: var(--fs-md);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.35rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lang-toggle:hover {
+    background: var(--color-dark);
+    color: var(--color-white);
+}
+
+/* Ensure buttons and interactive controls have clear visual hierarchy */
+.bg-switch-btn,
+.lang-toggle,
+.copy-email-btn {
+    line-height: 1;
+}
+
+/* Contact me pill button */
+.nav-contact-btn {
+    text-decoration: none;
+    color: var(--color-dark);
+    font-family: var(--font-body);
+    font-size: var(--fs-2xl);
+    font-weight: 700;
+    padding: 0.7rem 1.6rem;
+    border: 1.5px solid var(--color-dark);
+    border-radius: 50px;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    white-space: nowrap;
+}
+
+.nav-contact-btn:hover {
+    background: var(--color-dark);
+    color: var(--color-white);
+    transform: scale(1.04);
+}
+
+.contact-section {
+    padding: 6rem 2rem;
+    background: linear-gradient(180deg, rgba(74,92,62,0.06), rgba(195,117,107,0.03));
+    color: var(--color-dark);
+}
+
+.contact-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.contact-title {
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.contact-copy {
+    color: #666;
+    font-size: var(--fs-sm);
+}
+
+.contact-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: var(--color-white);
+    padding: 10px 14px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.contact-email {
+    font-weight: 800;
+    color: var(--color-dark);
+    font-size: var(--fs-xl);
+}
+
+.copy-email-btn {
+    background: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: var(--fs-lg);
+}
+
+.copy-email-btn.copied {
+    background: var(--color-accent);
 }
 
 .nav-link {
     text-decoration: none;
     color: var(--color-dark);
-    font-weight: 500;
-    font-size: 1rem;
-    letter-spacing: 0.05em;
+    font-weight: 700;
+    font-size: var(--fs-xl);
+    letter-spacing: 0.02em;
     position: relative;
     transition: color 0.3s var(--transition-smooth);
 }
@@ -232,6 +363,27 @@ html {
     width: 100%;
 }
 
+/* Responsive adjustments: scale down UI sizes on small screens */
+@media (max-width: 768px) {
+    :root {
+        --fs-3xl: 22px;
+        --fs-2xl: 20px;
+        --fs-xl: 18px;
+        --fs-lg: 16px;
+        --fs-md: 15px;
+        --fs-sm: 13px;
+        --ui-font-size: var(--fs-lg);
+    }
+
+    .nav {
+        padding: 0.8rem 1rem;
+    }
+
+    .nav-center { gap: 1.6rem; }
+
+    .nav-contact-btn { padding: 0.5rem 1rem; }
+}
+
 /* ====================================
    HERO SECTION
    ==================================== */
@@ -251,7 +403,7 @@ html {
 }
 
 .hero-title {
-    font-size: clamp(3rem, 8vw, 6rem);
+    font-size: clamp(3.4rem, 9vw, 7rem);
     font-weight: 900;
     line-height: 1.3;
     letter-spacing: -0.02em;
@@ -701,6 +853,40 @@ html {
 /* ====================================
    FOOTER
    ==================================== */
+
+/* ====================================
+    UI: Einheitliche Schriftgröße (ausgenommen Hero 3D-Text)
+    Diese Regel sorgt dafür, dass Navigation, Buttons, Section-Titel,
+    Karten-Texte und Footer dieselbe `--ui-font-size` verwenden.
+==================================== */
+.nav-link,
+.lang-toggle,
+.nav-contact-btn,
+.section-title,
+.grid-number,
+.grid-item h3,
+.grid-subtitle,
+.reveal-text,
+.reveal-text span,
+.letter-tumble-text,
+.letter-tumble-text .letter,
+.project-title,
+.project-subtitle,
+.project-description,
+.card-info,
+.card-info h3,
+.contact-title,
+.contact-copy,
+.contact-email,
+.copy-email-btn,
+.footer-content,
+.footer-content p,
+.social-link,
+.bg-switch-btn {
+     font-size: var(--ui-font-size) !important;
+     line-height: 1.2;
+}
+
 .footer {
     background-color: var(--color-dark);
     color: var(--color-white);
@@ -770,5 +956,10 @@ html {
     .cursor,
     .cursor-follower {
         display: none;
+    }
+
+    /* Reduce large UI sizes on small screens by lowering the UI variable */
+    :root {
+        --ui-font-size: 1rem;
     }
 }

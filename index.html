@@ -8,26 +8,26 @@
     <!-- Three.js r128 with working CDN -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 </head>
-<body>
+<body class="bg-grid">
     <!-- Custom Cursor -->
     <div class="cursor"></div>
     <div class="cursor-follower"></div>
     
-    <!-- Background Style Switcher -->
-    <div class="bg-switcher">
-        <button id="bgSwitchBtn" class="bg-switch-btn">
-            <span id="bgStyleName">Original</span>
-        </button>
-    </div>
+    <!-- Background is fixed to grid by default -->
 
     <!-- Navigation -->
     <nav class="nav">
-        <div class="nav-links">
+        <div class="nav-left">
+            <button class="lang-toggle" id="langToggle">EN / GER</button>
+        </div>
+        <div class="nav-center">
             <a href="#projects" class="nav-link">Projects</a>
-            <a href="#contact" class="nav-link">Contact</a>
             <a href="#resume" class="nav-link">Resume</a>
         </div>
-    </nav>
+            <div class="nav-right">
+                <a href="#contact" class="nav-contact-btn">Contact me</a>
+            </div>
+        </nav>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -128,6 +128,18 @@
     </section>
 
     <!-- Footer -->
+    <!-- Contact Section (bottom of page) -->
+    <section id="contact" class="contact-section">
+        <div class="contact-inner">
+            <h2 class="contact-title">Contact</h2>
+            <p class="contact-copy">Write me an email — I usually reply quickly.</p>
+            <div class="contact-row">
+                <span class="contact-email" id="contactEmail">09daube.ding@icloud.com</span>
+                <button id="copyEmailBtn" class="copy-email-btn">Copy email</button>
+            </div>
+        </div>
+    </section>
+
     <footer class="footer">
         <div class="footer-content">
             <p>Made with ❤️ & Code</p>

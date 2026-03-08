@@ -637,43 +637,10 @@ html {
 .card-info h3,
 .contact-title,
 .contact-copy,
-.contact-email,
-    .copy-email-btn,
-    .footer-content,
-    .footer-content p,
-    .social-link {
+    .contact-email,
+    .copy-email-btn {
      font-size: var(--ui-font-size) !important;
      line-height: 1.2;
-}
-
-.footer {
-    background-color: var(--color-dark);
-    color: var(--color-white);
-    padding: 4rem;
-    text-align: center;
-}
-
-.footer-content {
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-.social-links {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-.social-link {
-    color: var(--color-white);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-.social-link:hover {
-    color: var(--color-primary);
 }
 
 /* ====================================

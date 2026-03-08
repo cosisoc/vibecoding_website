@@ -110,13 +110,68 @@
         <div class="project-detail-container">
             <div class="project-number">02</div>
             <h2 class="project-detail-title">Datenvisualisierung</h2>
-            <p class="project-detail-subtitle">Simulation</p>
+            <p class="project-detail-subtitle">When Money Means Help: Tracing the Flow of Global Aid Funds (1960–2023)</p>
             
-            <div class="project-video-wrapper">
-                <video class="project-video" controls>
-                    <source src="datenvisualisierung/datenvisualisierung.video.mp4" type="video/mp4">
-                    Dein Browser unterstützt keine Videos.
-                </video>
+            <div class="project-content">
+                <div class="project-section two-column">
+                    <div class="section-text-block">
+                        <h3 class="section-title">Projektübersicht</h3>
+                        <p class="section-text">
+                            Das Projekt „When Money Means Help: Tracing the Flow of Global Aid Funds (1960–2023)" analysiert internationale Hilfsgelderströme über mehr als 60 Jahre. Es wurde von Cosima Bühler, Magali Wilhelm, Shilei Xu und Yannik Stegmaier entwickelt und nutzt OECD-Datensätze zu Entwicklungsbeihilfe.
+                        </p>
+                    </div>
+                    <div class="project-image-wrapper side-image">
+                        <img src="datenvisualisierung/image1.png" alt="Datenvisualisierung Übersicht" class="project-image">
+                    </div>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title">Ziele und Forschungsfragen</h3>
+                    <p class="section-text">
+                        Das Projekt untersucht, welche Länder die meisten Hilfsgelder geben und empfangen. Es verfolgt die Frage nach der Relevanz internationaler Hilfe und deren Verteilungsmustern über über 100 Länder hinweg.
+                    </p>
+                    <div class="project-image-wrapper">
+                        <img src="datenvisualisierung/image2.png" alt="Datenvisualisierung Konzept" class="project-image">
+                    </div>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title">Datenquellen und Verarbeitung</h3>
+                    <p class="section-text">
+                        Die Daten stammen aus zuverlässigen OECD-Quellen mit über 9 Millionen Zeilen und 2 GB CSV-Daten. Diese wurden bereinigt, standardisiert und auf wesentliche Variablen wie Spender, Empfänger, Jahr und Betrag reduziert; Top-20.000 Einträge für Spender und Empfänger wurden gefiltert.
+                    </p>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title">Visualisierung und Design</h3>
+                    <p class="section-text">
+                        Eine kreisförmige Chord-Diagramm-Visualisierung zeigt Flüsse zwischen Top-Donor-Ländern (z. B. USA, Deutschland, Japan) und Empfängerländern (z. B. China, Äthiopien, Nigeria). Das Layout ermöglicht Interaktion durch Auswahl von Donors ('D') oder Recipients ('R'), mit Fokus auf Top-15/20 und Transparenz für überlappende Bogen.
+                    </p>
+                    <div class="project-image-wrapper">
+                        <img src="datenvisualisierung/image3.png" alt="Datenvisualisierung Wireframe" class="project-image">
+                    </div>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title">Technische Herausforderungen</h3>
+                    <p class="section-text">
+                        Entwicklungsprobleme umfassten überlappende Knoten (gelöst durch Abstands- und Transparenzanpassungen), Performance (durch Vorverarbeitung und Fokus auf Top-10-Donors) sowie Farbbalancierung (Türkisblau für Spender, Orange für Empfänger). Hover- und Klick-Funktionen heben Details hervor.
+                    </p>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title">Erkenntnisse und Ausblick</h3>
+                    <p class="section-text">
+                        Die Visualisierung offenbart dominante Spender wie USA und Deutschland sowie Empfänger wie Äthiopien und Bangladesch. Zukünftige Erweiterungen planen Motive hinter Hilfe (humanitär, politisch, wirtschaftlich), wirtschaftliche Entwicklung von Empfängern und erweiterte Interaktivität.
+                    </p>
+                </div>
+
+                <div class="project-video-wrapper">
+                    <video class="project-video" controls>
+                        <source src="datenvisualisierung/datenvisualisierung.video.mp4" type="video/mp4">
+                        Dein Browser unterstützt keine Videos.
+                    </video>
+                </div>
             </div>
         </div>
     </section>

@@ -100,13 +100,30 @@ gridItems.forEach(item => {
         item.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
     });
 
-    // Click to scroll to project detail
+    // Click to show/hide project detail
     item.addEventListener('click', () => {
         const targetId = item.dataset.target;
         if (targetId) {
+            // Hide all project sections
+            document.querySelectorAll('.project-detail-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active state from all grid items
+            gridItems.forEach(gridItem => {
+                gridItem.classList.remove('active');
+            });
+            
+            // Show selected project section
             const targetSection = document.querySelector(targetId);
             if (targetSection) {
-                targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                targetSection.classList.add('active');
+                item.classList.add('active');
+                
+                // Scroll to the project section smoothly
+                setTimeout(() => {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
             }
         }
     });
@@ -507,34 +524,17 @@ if (heroContainer && typeof THREE !== 'undefined') {
                 mesh.userData.rotationProgress += rotSpeed;
                 
                 if (mesh.userData.rotationProgress >= 1) {
-                    // If this was an auto-rotation, perform return phase (out -> back)
-                    if (mesh.userData.isAuto && !mesh.userData.autoReturning) {
-                        // snap to target to ensure clean start for return
-                        if (mesh.userData.rotationAxis === 'y') {
-                            mesh.rotation.y = mesh.userData.rotationTarget;
-                        } else {
-                            mesh.rotation.x = mesh.userData.rotationTarget;
-                        }
-
-                        // prepare return
-                        mesh.userData.autoReturning = true;
-                        mesh.userData.rotationStart = mesh.userData.rotationTarget;
-                        mesh.userData.rotationTarget = mesh.userData.autoOrig !== undefined ? mesh.userData.autoOrig : mesh.userData.rotationStart;
-                        mesh.userData.rotationProgress = 0;
-                        // keep isRotating true to animate return
+                    // Finish rotation. For auto-spins we complete the full rotation and do not return.
+                    mesh.userData.isRotating = false;
+                    mesh.userData.rotationProgress = 0;
+                    if (mesh.userData.rotationAxis === 'y') {
+                        mesh.rotation.y = mesh.userData.rotationTarget;
                     } else {
-                        // Normal end of rotation (or auto return finished)
-                        mesh.userData.isRotating = false;
-                        mesh.userData.rotationProgress = 0;
-                        if (mesh.userData.rotationAxis === 'y') {
-                            mesh.rotation.y = mesh.userData.rotationTarget;
-                        } else {
-                            mesh.rotation.x = mesh.userData.rotationTarget;
-                        }
-                        // clear auto flags
-                        mesh.userData.isAuto = false;
-                        mesh.userData.autoReturning = false;
+                        mesh.rotation.x = mesh.userData.rotationTarget;
                     }
+                    // clear auto flags
+                    mesh.userData.isAuto = false;
+                    mesh.userData.autoReturning = false;
                 } else {
                     const t = mesh.userData.rotationProgress;
                     const eased = t < 0.5 
@@ -633,8 +633,9 @@ if (heroContainer && typeof THREE !== 'undefined') {
 
             // Skip if currently being rotated by hover
             if (!mesh.userData.isRotating) {
-                // Gentle outward tilt then return so letters stay readable
-                const angle = Math.PI / 9; // ~20 degrees
+                // Auto-rotate: perform a full 360° spin per letter (clockwise around Y)
+                const fullSpins = 1; // number of full rotations
+                const direction = 1; // 1 = clockwise, -1 = counter-clockwise
                 mesh.userData.isRotating = true;
                 mesh.userData.isAuto = true;
                 mesh.userData.autoReturning = false;
@@ -642,9 +643,9 @@ if (heroContainer && typeof THREE !== 'undefined') {
                 mesh.userData.rotationAxis = 'y';
                 mesh.userData.autoOrig = mesh.rotation.y;
                 mesh.userData.rotationStart = mesh.rotation.y;
-                mesh.userData.rotationTarget = mesh.rotation.y + angle; // tilt out
+                mesh.userData.rotationTarget = mesh.rotation.y + (Math.PI * 2 * fullSpins * direction);
                 mesh.userData.rotationProgress = 0;
-                mesh.userData.rotationSpeed = 0.035; // slower, relaxed animation
+                mesh.userData.rotationSpeed = 0.06; // speed tuned for full spin
             }
 
             // Determine delay to next letter; longer between words

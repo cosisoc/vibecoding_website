@@ -16,16 +16,16 @@
     --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     /* Typographic scale (semantic tokens) */
-    --fs-xs: 12px;   /* captions, micro copy */
-    --fs-sm: 14px;   /* fine print, helper text */
-    --fs-md: 16px;   /* body copy baseline */
-    --fs-lg: 30px;   /* UI base, small buttons */
-    --fs-xl: 20px;   /* prominent UI elements, nav links */
-    --fs-2xl: 24px;  /* primary CTA, important buttons */
-    --fs-3xl: 28px;  /* prominent titles outside hero */
+    --fs-xs: 14px;   /* captions, micro copy */
+    --fs-sm: 16px;   /* fine print, helper text */
+    --fs-md: 20px;   /* body copy baseline */
+    --fs-lg: 22px;   /* UI base, small buttons */
+    --fs-xl: 24px;   /* prominent UI elements, nav links */
+    --fs-2xl: 34px;  /* primary CTA, important buttons */
+    --fs-3xl: 40px;  /* prominent titles outside hero */
 
     /* Backwards-compatible alias used across the stylesheet */
-    --ui-font-size: var(--fs-lg);
+    --ui-font-size: var(--fs-xl);
 }
 
 * {
@@ -521,7 +521,7 @@ html {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
 }
 
@@ -536,6 +536,11 @@ html {
     overflow: hidden;
     cursor: pointer;
     transition: all 0.4s var(--transition-smooth);
+}
+
+.grid-item.active {
+    border: 3px solid var(--color-primary);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .grid-image {
@@ -621,6 +626,11 @@ html {
     border-top: 6px solid var(--color-dark);
     position: relative;
     margin-top: 3rem;
+    display: none;
+}
+
+.project-detail-section.active {
+    display: block;
 }
 
 .project-detail-section::before {
@@ -649,7 +659,10 @@ html {
 }
 
 .project-detail-container {
-    max-width: 1400px;
+    /* Wider container to use more horizontal real estate */
+    width: 100%;
+    max-width: 1900px;
+    padding: 0 2rem; /* small side padding so content spans more width */
     margin: 0 auto;
     position: relative;
 }
@@ -667,7 +680,7 @@ html {
 }
 
 .project-detail-title {
-    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-size: clamp(3rem, 5.5vw, 5rem);
     font-weight: 900;
     color: var(--project-accent);
     margin-bottom: 0.5rem;
@@ -675,12 +688,107 @@ html {
 }
 
 .project-detail-subtitle {
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-size: clamp(1.4rem, 2.6vw, 2.2rem);
     color: var(--color-dark);
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
     text-align: center;
     font-weight: 400;
-    opacity: 0.7;
+    opacity: 0.85;
+}
+
+.project-content {
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+.project-section {
+    margin-bottom: 4rem;
+}
+
+/* Two-column layout for sections with images: text + image (~50/50) */
+.project-section.two-column {
+    display: grid;
+    grid-template-columns: 60% 40%; /* more space for text, image ~40% */
+    gap: 3rem;
+    align-items: start;
+}
+
+.project-section.two-column .section-text-block {
+    align-self: start;
+}
+
+.project-image-wrapper.side-image {
+    width: 100%;
+}
+
+.section-title {
+    font-size: clamp(1.8rem, 2.6vw, 2.8rem);
+    font-weight: 700;
+    color: var(--project-accent);
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--project-accent);
+    padding-left: 1.25rem;
+}
+
+.section-text {
+    font-size: 1.8rem; /* larger body text for easier reading */
+    line-height: 2.2;
+    color: var(--color-dark);
+    opacity: 0.98;
+}
+
+.project-image-wrapper {
+    margin-top: 2rem;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 2px solid var(--project-accent);
+}
+
+.project-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.project-image-top {
+    width: 100%;
+    margin: 1.5rem 0 3rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+}
+
+.project-image-top .project-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* Make content breathe and use the page width */
+.project-detail-section {
+    padding: 6rem 0 4rem; /* reduce side padding handled by container */
+}
+
+/* Readability tweaks for narrow screens */
+@media (max-width: 900px) {
+    .project-detail-container {
+        padding: 0 1.25rem;
+    }
+    .project-content {
+        max-width: 100%;
+    }
+    .section-text {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+    .project-section.two-column {
+        display: block;
+    }
+    .project-number {
+        left: 1rem;
+    }
 }
 
 .project-video-wrapper {

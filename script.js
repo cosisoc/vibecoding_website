@@ -99,6 +99,17 @@ gridItems.forEach(item => {
     item.addEventListener('mouseleave', () => {
         item.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
     });
+
+    // Click to scroll to project detail
+    item.addEventListener('click', () => {
+        const targetId = item.dataset.target;
+        if (targetId) {
+            const targetSection = document.querySelector(targetId);
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    });
 });
 
 // =====================================

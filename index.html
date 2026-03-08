@@ -47,7 +47,7 @@
     <section class="grid-section" id="projects">
         <h2 class="section-title">Projekte</h2>
         <div class="interactive-grid">
-            <div class="grid-item project-preview" data-color="#4A5C3E" data-project="iks">
+            <div class="grid-item project-preview" data-color="#4A5C3E" data-project="iks" data-target="#project-iks">
                 <div class="grid-image" style="background-image: url('iks/iks.foto.png');"></div>
                 <div class="grid-content">
                     <span class="grid-number">01</span>
@@ -55,7 +55,7 @@
                     <p class="grid-subtitle">Ausstellungsgestaltung</p>
                 </div>
             </div>
-            <div class="grid-item project-preview" data-color="#A8C69F" data-project="datenvisualisierung">
+            <div class="grid-item project-preview" data-color="#A8C69F" data-project="datenvisualisierung" data-target="#project-datenvisualisierung">
                 <div class="grid-image" style="background-image: url('datenvisualisierung/datenvisualisierung.foto.png');"></div>
                 <div class="grid-content">
                     <span class="grid-number">02</span>
@@ -63,7 +63,7 @@
                     <p class="grid-subtitle">Simulation</p>
                 </div>
             </div>
-            <div class="grid-item project-preview" data-color="#C3756B" data-project="interface">
+            <div class="grid-item project-preview" data-color="#C3756B" data-project="interface" data-target="#project-interface">
                 <div class="grid-image" style="background-image: url('interface/interface.foto.png');"></div>
                 <div class="grid-content">
                     <span class="grid-number">03</span>
@@ -74,11 +74,77 @@
         </div>
     </section>
 
-    <!-- Text reveal removed per request -->
+    <!-- Project Details: IKS -->
+    <section class="project-detail-section project-iks" id="project-iks" data-color="#4A5C3E">
+        <div class="project-detail-container">
+            <div class="project-number">01</div>
+            <h2 class="project-detail-title">IKS — Ausstellungsgestaltung</h2>
+            <p class="project-detail-subtitle">Interaktive Kunst Simulation</p>
+            
+            <div class="project-video-wrapper">
+                <video class="project-video" controls>
+                    <source src="iks/iks.video.mp4" type="video/mp4">
+                    Dein Browser unterstützt keine Videos.
+                </video>
+            </div>
 
-    <!-- Removed: Letter Tumble, 3D Cube, and Project Detail sections -->
+            <div class="project-pdfs">
+                <h3 class="pdfs-title">Projekt-Dokumentation</h3>
+                <div class="pdf-viewer">
+                    <iframe src="iks/14 - First prototype.pdf" class="pdf-embed-large" id="iks-pdf"></iframe>
+                    <div class="pdf-navigation">
+                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/01 - Title Page.pdf'">Title</button>
+                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/03 - Introduction.pdf'">Introduction</button>
+                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/04 - Problem Statement & Goals (Topic).pdf'">Problem Statement</button>
+                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/12 - First Interaction Ideas.pdf'">Ideas</button>
+                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/14 - First prototype.pdf'">Prototype</button>
+                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/16 - Design Concept.pdf'">Concept</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- Footer -->
+    <!-- Project Details: Datenvisualisierung -->
+    <section class="project-detail-section project-datenvis" id="project-datenvisualisierung" data-color="#A8C69F">
+        <div class="project-detail-container">
+            <div class="project-number">02</div>
+            <h2 class="project-detail-title">Datenvisualisierung</h2>
+            <p class="project-detail-subtitle">Simulation</p>
+            
+            <div class="project-video-wrapper">
+                <video class="project-video" controls>
+                    <source src="datenvisualisierung/datenvisualisierung.video.mp4" type="video/mp4">
+                    Dein Browser unterstützt keine Videos.
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Details: Interface -->
+    <section class="project-detail-section project-interface" id="project-interface" data-color="#C3756B">
+        <div class="project-detail-container">
+            <div class="project-number">03</div>
+            <h2 class="project-detail-title">Interface</h2>
+            <p class="project-detail-subtitle">Interaktionsdesign</p>
+
+            <div class="project-pdfs">
+                <h3 class="pdfs-title">Projekt-Dokumentation</h3>
+                <div class="pdf-viewer">
+                    <iframe src="interface/01 - Deckblatt.pdf" class="pdf-embed-large" id="interface-pdf"></iframe>
+                    <div class="pdf-navigation">
+                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/01 - Deckblatt.pdf'">Deckblatt</button>
+                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/03 - Einleitung.pdf'">Einleitung</button>
+                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/04 - Der Roboter.pdf'">Roboter</button>
+                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/06 - Konzept.pdf'">Konzept</button>
+                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/16 - finales Konzept.pdf'">Finales Konzept</button>
+                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/17 - Interaktion I.pdf'">Interaktion</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section (bottom of page) -->
     <section id="contact" class="contact-section">
         <div class="contact-inner">

@@ -82,22 +82,8 @@ gridItems.forEach(item => {
         item.style.setProperty('--hover-color', color);
     });
     
-    item.addEventListener('mousemove', (e) => {
-        const rect = item.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = (y - centerY) / 10;
-        const rotateY = (centerX - x) / 10;
-        
-        item.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-    });
-    
     item.addEventListener('mouseleave', () => {
-        item.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+        item.style.transform = '';
     });
 
     // Click to show/hide project detail
@@ -148,8 +134,8 @@ const observerCallback = (entries) => {
 
 const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-// Animate elements on scroll
-const animateOnScroll = document.querySelectorAll('.grid-item, .project-card, .section-title');
+// Animate elements on scroll — replaced by dedicated scroll system below
+const animateOnScroll = document.querySelectorAll('.project-card');
 animateOnScroll.forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(50px)';
@@ -158,6 +144,43 @@ animateOnScroll.forEach(el => {
 });
 
 // Text reveal removed per request
+
+// =====================================
+// SCROLL PROGRESS BAR
+// =====================================
+const scrollProgressBar = document.getElementById('scroll-progress');
+window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    if (scrollProgressBar) scrollProgressBar.style.width = pct + '%';
+}, { passive: true });
+
+// =====================================
+// SCROLL REVEAL — GRID TITLE + CARDS
+// =====================================
+const gridSectionTitle = document.querySelector('.grid-section .section-title');
+const gridCards = document.querySelectorAll('.interactive-grid .grid-item');
+
+// Set initial hidden state
+gridCards.forEach(card => card.classList.add('scroll-hidden'));
+
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            if (entry.target === gridSectionTitle) {
+                entry.target.classList.add('revealed');
+            } else {
+                entry.target.classList.remove('scroll-hidden');
+                entry.target.classList.add('scroll-visible');
+            }
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.15 });
+
+if (gridSectionTitle) revealObserver.observe(gridSectionTitle);
+gridCards.forEach(card => revealObserver.observe(card));
 
 // =====================================
 // PARALLAX EFFECT FOR SHAPES
@@ -171,6 +194,47 @@ window.addEventListener('scroll', () => {
         const speed = 0.5 + (index * 0.2);
         const yPos = -(scrolled * speed);
         shape.style.transform = `translate(0, ${yPos}px)`;
+    });
+});
+
+// =====================================
+// SCROLL REVEAL — PROJECT DETAIL CONTENT
+// =====================================
+const detailRevealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+            // stagger each element slightly based on its index among siblings
+            const siblings = Array.from(entry.target.parentElement.children);
+            const idx = siblings.indexOf(entry.target);
+            entry.target.style.transitionDelay = (idx * 0.08) + 's';
+            entry.target.classList.add('is-visible');
+            detailRevealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1 });
+
+function observeDetailSection(section) {
+    const els = section.querySelectorAll(
+        '.project-section, .project-video-wrapper, .project-pdfs, ' +
+        '.project-detail-title, .project-detail-subtitle, .project-image-wrapper'
+    );
+    els.forEach(el => detailRevealObserver.observe(el));
+}
+
+// Observe already-active sections and any that become active later
+document.querySelectorAll('.project-detail-section.active').forEach(observeDetailSection);
+
+// Hook into grid-item click so newly shown sections get observed
+document.querySelectorAll('.grid-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const targetId = item.dataset.target;
+        if (targetId) {
+            const section = document.querySelector(targetId);
+            if (section) {
+                // slight delay so display:block kicks in before observing
+                setTimeout(() => observeDetailSection(section), 50);
+            }
+        }
     });
 });
 
@@ -270,7 +334,7 @@ const heroContainer = document.getElementById('threejs-hero');
 
 if (heroContainer && typeof THREE !== 'undefined') {
     // Only these words should respond to hover/rotation
-    const interactiveWords = new Set(['cosima', 'interactiondesign']);
+    const interactiveWords = new Set(['cosima', 'interaction', 'design', 'interaktionsgestaltungs']);
     // Scene setup
     const heroScene = new THREE.Scene();
     
@@ -287,14 +351,14 @@ if (heroContainer && typeof THREE !== 'undefined') {
     );
     
     const heroRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
+    heroRenderer.setPixelRatio(window.devicePixelRatio);
     heroRenderer.setSize(window.innerWidth, window.innerHeight * 0.5);
     heroRenderer.setClearColor(0x000000, 0);
     heroContainer.appendChild(heroRenderer.domElement);
-    
+
     heroCamera.position.set(0, 0, 50);
     heroCamera.lookAt(0, 0, 0);
-    
+
     // Lights
     const heroAmbientLight = new THREE.AmbientLight(0xffffff, 0.7);
     heroScene.add(heroAmbientLight);
@@ -356,17 +420,18 @@ if (heroContainer && typeof THREE !== 'undefined') {
                             font: heroFont,
                             size: fontSize,
                             height: 2.5,
-                            curveSegments: 12,
+                            curveSegments: 64,
                             bevelEnabled: true,
                             bevelThickness: 0.4,
                             bevelSize: 0.25,
                             bevelOffset: 0,
-                            bevelSegments: 5
+                            bevelSegments: 12
                         });
                         tempGeometry.computeBoundingBox();
                         const width = tempGeometry.boundingBox.max.x - tempGeometry.boundingBox.min.x;
                         charData.push({ char, width });
                         wordWidth += width;
+                        tempGeometry.dispose();
                     });
 
                     wordData.push({ charData, wordWidth });
@@ -386,12 +451,12 @@ if (heroContainer && typeof THREE !== 'undefined') {
                             font: heroFont,
                             size: fontSize,
                             height: 2.5,
-                            curveSegments: 12,
+                            curveSegments: 64,
                             bevelEnabled: true,
                             bevelThickness: 0.4,
                             bevelSize: 0.25,
                             bevelOffset: 0,
-                            bevelSegments: 5
+                            bevelSegments: 12
                         });
 
                         textGeometry.computeBoundingBox();
@@ -437,8 +502,8 @@ if (heroContainer && typeof THREE !== 'undefined') {
             }
 
             // Choose texts based on language
-            const heroText1 = (lang === 'DE') ? 'Hi ich bin Cosima' : 'Hi im Cosima';
-            const heroText2 = (lang === 'DE') ? 'eine Interactiondesign-Studentin' : 'a interactiondesign student';
+            const heroText1 = (lang === 'DE') ? 'Hi ich bin Cosima' : 'Hi I\'m Cosima';
+            const heroText2 = (lang === 'DE') ? 'Interaktionsgestaltungs Studentin' : 'interaction design student';
 
             createTextLine(heroText1, 3, 0x4A5C3E, 5);
             createTextLine(heroText2, -3, 0xC3756B, 3.5);
@@ -505,7 +570,7 @@ if (heroContainer && typeof THREE !== 'undefined') {
                     hoveredMesh.userData.rotationTarget = hoveredMesh.rotation.x + Math.PI * 2 * -Math.sign(deltaY);
                 }
                 // hover rotations are a bit snappier
-                hoveredMesh.userData.rotationSpeed = 0.08;
+                hoveredMesh.userData.rotationSpeed = 0.02;
                 hoveredMesh.userData.rotationProgress = 0;
             }
         }
@@ -569,6 +634,7 @@ if (heroContainer && typeof THREE !== 'undefined') {
         heroCamera.top = viewSize / 2;
         heroCamera.bottom = -viewSize / 2;
         heroCamera.updateProjectionMatrix();
+        heroRenderer.setPixelRatio(window.devicePixelRatio);
         heroRenderer.setSize(window.innerWidth, window.innerHeight * 0.5);
     });
 
@@ -603,11 +669,6 @@ if (heroContainer && typeof THREE !== 'undefined') {
                 if (!ud.isRotating) ud.hasRotated = false;
                 // clear non-essential auto flags
                 ud.isAuto = false;
-                // keep autoOrig until any returning finishes
-                if (!ud.autoReturning) {
-                    // remove custom speed if present
-                    if (ud.rotationSpeed) delete ud.rotationSpeed;
-                }
             }
         });
     }
@@ -696,16 +757,152 @@ const translations = {
     EN: {
         nav: ['Projects', 'Resume'],
         contact: 'Contact me',
-        hero1: 'Hi im Cosima',
-        hero2: 'a interactiondesign student',
-        projectsTitle: 'Projects'
+        hero1: 'Hi I\'m Cosima',
+        hero2: 'interaction design student',
+        projectsTitle: 'Projects',
+        
+        // Grid items
+        'iks-title': 'Interactive Communication Systems',
+        'iks-subtitle': 'Exhibition Design',
+        'dataviz-title': 'Data Visualization',
+        'interface-title': 'Interface',
+        'interface-subtitle': 'Interaction Design',
+        
+        // IKS Project Detail
+        'iks-detail-subtitle': 'Interactive Communication Systems — Comparative Brain Anatomy',
+        'iks-intro': '"Anatomy of Minds – A Comparison Journey" is an interactive prototype that examines the differences and similarities of brains across various species, focusing on anatomy, environment, intelligence, and emotions. Developed by Cosima Bühler, María Jesús Fonseca, and Yannik Stegmaier in the "Interactive Communication Systems" course (HfG, Winter Semester 2025-2026), the project primarily compares the human brain with that of the ant to illuminate definitions of intelligence beyond anthropocentric perspectives.',
+        'iks-section1-title': 'Project Process',
+        'iks-section1-text1': 'The project began with choosing between supersonic jets and the human head, with the latter selected due to its broad possibilities for interactive approaches. After brainstorming about emotions, brain regions, and species comparisons, the focus was placed on comparative anatomy, as extensive, reliable data was available for this; emotions were integrated as a subcategory.',
+        'iks-section1-text2': 'Research included 3D-printed brain models, mind maps, and schemas on dominant emotions and intelligence in selected animals (e.g., empathy in humans/elephants, collective aggression in ants, swarm intelligence in bees, social intelligence in elephants), leading to the selection of human and ant – due to strong contrasts in size, structure, and social behavior.',
+        'iks-section2-title': 'Interaction Concept',
+        'iks-section2-text1': 'Interaction occurs through a game-like table surface with projection: Five sensor points detect NFC-marked, rotatable 3D figures (human/ant) via Arduino ESP32-S3 and rotary encoders. Two main points show overviews and rotatable 3D brains; three theme points (environment, intelligence, emotions) highlight relevant brain areas and compare aspects such as collective vs. individual intelligence.',
+        'iks-section2-text2': 'When placing a figure, information appears (e.g., antennal lobes in ants for pheromones, prefrontal cortex in humans for social behavior); a second figure activates comparisons. The control is intuitive, non-linear, and cross-generational, with real-time projections for quick, non-overwhelming learning moments.',
+        'iks-section3-title': 'Technical Implementation',
+        'iks-section3-text': 'The table integrates NFC readers and rotary encoders into a tangible-based interaction. Communication between Arduino and website functions via a serial interface (Serial Monitor), which transmits position/rotation data to a JavaScript website for dynamic visualizations. Custom-made illustrations in cartoon-like style with Pacaembu font provide accessible aesthetics.',
+        
+        // Data Visualization Project
+        'dataviz-detail-title': 'Data Visualization',
+        'dataviz-section1-title': 'Project Overview',
+        'dataviz-section1-text': 'The project "When Money Means Help: Tracing the Flow of Global Aid Funds (1960–2023)" analyzes international aid fund flows over more than 60 years. It was developed by Cosima Bühler, Magali Wilhelm, Shilei Xu, and Yannik Stegmaier and uses OECD datasets on development assistance.',
+        'dataviz-section2-title': 'Goals and Research Questions',
+        'dataviz-section2-text': 'The project examines which countries give and receive the most aid funds. It pursues the question of the relevance of international aid and its distribution patterns across over 100 countries.',
+        'dataviz-section3-title': 'Data Sources and Processing',
+        'dataviz-section3-text': 'The data comes from reliable OECD sources with over 9 million rows and 2 GB of CSV data. These were cleaned, standardized, and reduced to essential variables such as donor, recipient, year, and amount; top 20,000 entries for donors and recipients were filtered.',
+        'dataviz-section4-title': 'Visualization and Design',
+        'dataviz-section4-text': 'A circular chord diagram visualization shows flows between top donor countries (e.g., USA, Germany, Japan) and recipient countries (e.g., China, Ethiopia, Nigeria). The layout enables interaction through selection of donors (\'D\') or recipients (\'R\'), focusing on top-15/20 and transparency for overlapping arcs.',
+        'dataviz-section5-title': 'Technical Challenges',
+        'dataviz-section5-text': 'Development problems included overlapping nodes (solved through distance and transparency adjustments), performance (through preprocessing and focus on top-10 donors), and color balancing (turquoise blue for donors, orange for recipients). Hover and click functions highlight details.',
+        'dataviz-section6-title': 'Insights and Outlook',
+        'dataviz-section6-text': 'The visualization reveals dominant donors like the USA and Germany as well as recipients like Ethiopia and Bangladesh. Future extensions plan motives behind aid (humanitarian, political, economic), economic development of recipients, and expanded interactivity.',
+        
+        // Interface Project
+        'interface-detail-subtitle': 'Interface Design — Controller Development',
+        'interface-section1-title': 'Introduction',
+        'interface-section1-text': 'In the subject Interface Design, we dealt extensively with user-oriented design. The task was to develop a controller suitable for a provided robot. The functions of the robot were also already specified and had to be considered in the design of the controller. The area of application and the associated target group could be defined and developed internally within the group.',
+        'interface-section2-title': 'Concept',
+        'interface-section2-text': 'The basic concept consisted of developing a controller that is perfectly suited for use in children\'s everyday life. For this, we wanted to use the functions of the robot to make the tidying-up process easier for children and turn an unloved task into a playful experience.',
+        'interface-section3-title': 'Ideation',
+        'interface-section4-title': 'User Testing',
+        'interface-section4-text': 'To test our conceptualized idea, we turned to students at HfG Schwäbisch Gmünd. Among other things, we asked about previous experience with controllers, the comprehensibility of the functions, and the visibility of all components. The expertise of the students helped us immensely in further optimizing our concept.',
+        'interface-section5-title': 'Technical Implementation',
+        'interface-section5-list': [
+            'Movement: A joycon with two rollers to visually distinguish the two differently mapped axes.',
+            'Crabwalk: Two buttons in a specially crafted 3D-printed housing to prevent slipping or breaking out.',
+            'Slow mode: An on/off switch to make the activity of slow mode visually visible.',
+            'Gripper: A limit switch to integrate the natural movement of gripping into the controller.',
+            'Height-adjustable gripper arm: Potentiometer with a specially crafted rotary wheel attachment through 3D printing for good operability with just one thumb.',
+            'Ground / 3.3V hub: A hub to centrally provide power to all components and save cables.'
+        ],
+        'interface-section6-title': 'User Testing 2',
+        'interface-section6-text': 'After we had largely succeeded in optimizing our concept based on the constructive criticism of HfG students and the findings drawn from testing, we had the opportunity to conduct another user test with representatives of our actual target group (5th graders from a secondary school). In doing so, we gained further important insights – both in terms of form and visual design.',
+        'interface-section7-title': 'Final Concept',
+        'interface-section7-text': 'Our final concept combines a playful form with ergonomics and functionality. The placement of the components was changed so that there is a division of functions – on the one hand, the control of the robot itself, on the other hand for interaction with the gripper arm. This spatial division is also reflected in the visual design.',
+        'interface-caption1': 'Robot Control',
+        'interface-caption2': 'Movement of the Gripper Arm',
+        
+        // Contact Section
+        'contact-title': 'Contact',
+        'contact-copy': 'Write me an email — I usually reply quickly.',
+        'copy-email-btn': 'Copy email',
+        'copied': 'Copied!',
+        
+        // Video fallback
+        'video-unsupported': 'Your browser does not support videos.'
     },
     DE: {
         nav: ['Projekte', 'Lebenslauf'],
         contact: 'Kontaktiere mich',
         hero1: 'Hi ich bin Cosima',
-        hero2: 'eine Interactiondesign-Studentin',
-        projectsTitle: 'Projekte'
+        hero2: 'Interaktionsgestaltungs Studentin',
+        projectsTitle: 'Projekte',
+        
+        // Grid items
+        'iks-title': 'Interaktive Kommunikationssysteme',
+        'iks-subtitle': 'Ausstellungsgestaltung',
+        'dataviz-title': 'Datenvisualisierung',
+        'interface-title': 'Interface',
+        'interface-subtitle': 'Interaktionsdesign',
+        
+        // IKS Project Detail
+        'iks-detail-subtitle': 'Interactive Communication Systems — Vergleichende Gehirnanatomie',
+        'iks-intro': '„Anatomy of Minds – A Comparison Journey" ist ein interaktiver Prototyp, der die Unterschiede und Gemeinsamkeiten von Gehirnen verschiedener Arten untersucht, mit Fokus auf Anatomie, Umwelt, Intelligenz und Emotionen. Entwickelt von Cosima Bühler, María Jesús Fonseca und Yannik Stegmaier im Kurs „Interactive Communication Systems" (HfG, Wintersemester 2025-2026), vergleicht das Projekt vor allem das menschliche Gehirn mit dem der Ameise, um Intelligenzdefinitionen jenseits anthropozentrischer Sichtweisen zu beleuchten.',
+        'iks-section1-title': 'Projektprozess',
+        'iks-section1-text1': 'Das Projekt begann mit der Themenwahl zwischen Überschalljets und dem menschlichen Kopf, wobei letzterer aufgrund seiner breiten Möglichkeiten für interaktive Ansätze gewählt wurde. Nach Brainstorming zu Emotionen, Gehirnregionen und Artenvergleichen wurde der Fokus auf vergleichende Anatomie gelegt, da hierzu umfangreiche, zuverlässige Daten vorlagen; Emotionen wurden als Unterkategorie integriert.',
+        'iks-section1-text2': 'Recherche umfasste 3D-gedruckte Gehirnmodelle, Mindmaps und Schemata zu dominanten Emotionen und Intelligenz bei ausgewählten Tieren (z. B. Empathie beim Menschen/Elefanten, kollektive Aggression bei Ameisen, Schwarmintelligenz bei Bienen, Sozialintelligenz bei Elefanten), was zur Auswahl von Mensch und Ameise führte – aufgrund starker Kontraste in Größe, Struktur und Sozialverhalten.',
+        'iks-section2-title': 'Interaktionskonzept',
+        'iks-section2-text1': 'Die Interaktion erfolgt über eine spieleähnliche Tischoberfläche mit Projektion: Fünf Sensorpunkte erkennen NFC-markierte, drehbare 3D-Figuren (Mensch/Ameise) via Arduino ESP32-S3 und Rotary-Encodern. Zwei Hauptpunkte zeigen Überblicke und rotierbare 3D-Gehirne; drei Themenpunkte (Umwelt, Intelligenz, Emotionen) heben relevante Hirnareale hervor und vergleichen Aspekte wie kollektive vs. individuelle Intelligenz.',
+        'iks-section2-text2': 'Beim Platzieren einer Figur erscheinen Infos (z. B. Antennenlappen bei Ameisen für Pheromone, präfrontaler Cortex beim Menschen für Sozialverhalten); eine zweite Figur aktiviert Vergleiche. Die Steuerung ist intuitiv, nicht-linear und altersübergreifend, mit Echtzeit-Projektionen für schnelle, überforderungsfreie Lernmomente.',
+        'iks-section3-title': 'Technische Umsetzung',
+        'iks-section3-text': 'Der Tisch integriert NFC-Reader und Rotary-Encoder zu einer Tangible-basierten Interaktion. Die Kommunikation zwischen Arduino und Webseite funktioniert über eine serielle Schnittstelle (Serial Monitor), welche Positions-/Drehdaten an eine JavaScript-Website für dynamische Visualisierungen überträgt. Individuell angefertigte Illustrationen in cartoonartigem Stil mit Pacaembu-Font sorgen für zugängliche Ästhetik.',
+        
+        // Data Visualization Project
+        'dataviz-detail-title': 'Datenvisualisierung',
+        'dataviz-section1-title': 'Projektübersicht',
+        'dataviz-section1-text': 'Das Projekt „When Money Means Help: Tracing the Flow of Global Aid Funds (1960–2023)" analysiert internationale Hilfsgelderströme über mehr als 60 Jahre. Es wurde von Cosima Bühler, Magali Wilhelm, Shilei Xu und Yannik Stegmaier entwickelt und nutzt OECD-Datensätze zu Entwicklungsbeihilfe.',
+        'dataviz-section2-title': 'Ziele und Forschungsfragen',
+        'dataviz-section2-text': 'Das Projekt untersucht, welche Länder die meisten Hilfsgelder geben und empfangen. Es verfolgt die Frage nach der Relevanz internationaler Hilfe und deren Verteilungsmustern über über 100 Länder hinweg.',
+        'dataviz-section3-title': 'Datenquellen und Verarbeitung',
+        'dataviz-section3-text': 'Die Daten stammen aus zuverlässigen OECD-Quellen mit über 9 Millionen Zeilen und 2 GB CSV-Daten. Diese wurden bereinigt, standardisiert und auf wesentliche Variablen wie Spender, Empfänger, Jahr und Betrag reduziert; Top-20.000 Einträge für Spender und Empfänger wurden gefiltert.',
+        'dataviz-section4-title': 'Visualisierung und Design',
+        'dataviz-section4-text': 'Eine kreisförmige Chord-Diagramm-Visualisierung zeigt Flüsse zwischen Top-Donor-Ländern (z. B. USA, Deutschland, Japan) und Empfängerländern (z. B. China, Äthiopien, Nigeria). Das Layout ermöglicht Interaktion durch Auswahl von Donors (\'D\') oder Recipients (\'R\'), mit Fokus auf Top-15/20 und Transparenz für überlappende Bogen.',
+        'dataviz-section5-title': 'Technische Herausforderungen',
+        'dataviz-section5-text': 'Entwicklungsprobleme umfassten überlappende Knoten (gelöst durch Abstands- und Transparenzanpassungen), Performance (durch Vorverarbeitung und Fokus auf Top-10-Donors) sowie Farbbalancierung (Türkisblau für Spender, Orange für Empfänger). Hover- und Klick-Funktionen heben Details hervor.',
+        'dataviz-section6-title': 'Erkenntnisse und Ausblick',
+        'dataviz-section6-text': 'Die Visualisierung offenbart dominante Spender wie USA und Deutschland sowie Empfänger wie Äthiopien und Bangladesch. Zukünftige Erweiterungen planen Motive hinter Hilfe (humanitär, politisch, wirtschaftlich), wirtschaftliche Entwicklung von Empfängern und erweiterte Interaktivität.',
+        
+        // Interface Project
+        'interface-detail-subtitle': 'Interface Design — Controllerentwicklung',
+        'interface-section1-title': 'Einleitung',
+        'interface-section1-text': 'Im Fach Interface Design beschäftigten wir uns viel mit nutzerorientierter Gestaltung. Aufgabe war es passend zu einem bereitgestellten Roboter einen Controller zu entwickeln. Die Funktionen des Roboters waren ebenfalls schon vorgegeben und galten bei der Gestaltung des Controllers zu beachten. Der Einsatzbereich und die daran gebundene Zielgruppe durften gruppenintern festgelegt und ausgearbeitet werden.',
+        'interface-section2-title': 'Konzept',
+        'interface-section2-text': 'Das grundliegende Konzept bestand aus der Entwicklung eines Controllers der sich perfekt für den Einsatz im Kinderalltag eignet. Dafür wollten wir die Funktionen des Roboters nutzen, um Kindern den Aufräumprozess zu erleichtern und aus einer nichtgemochten Aufgabe ein spielerisches Erlebnis zu gestalten.',
+        'interface-section3-title': 'Ideenfindung',
+        'interface-section4-title': 'Usertesting',
+        'interface-section4-text': 'Um die von uns konzeptionierte Idee zu testen, wandten wir uns an Studierende der HfG Schwäbisch Gmünd. Dabei fragten wir unter Anderem nach Vorerfahrungen mit Controllern, der Verständlichkeit der Funktionen, sowie der Ersichtlichkeit aller Bauteile. Das Fachwissen der Studierenden half uns bei der weiteren Optimierung unseres Konzepts ungemein.',
+        'interface-section5-title': 'Technische Umsetzung',
+        'interface-section5-list': [
+            'Fortbewegung: Ein Joycon mit zwei Walzen um die zwei verschieden gemappten Achsen visuell unterschieden zu können.',
+            'Crabwalk: Zwei Buttons in einem speziell angefertigtem 3D-gedruckten Gehäuse um Verrutschen oder Herausbrechen vorzubeugen.',
+            'Slowmodus: Ein On/Off-Switch um die Aktivität des Slowmodus visuell ersichtlich zu machen.',
+            'Greifer: Ein Limit-Switch um die natürliche Bewegung des Greifens in den Controller zu integrieren.',
+            'Höhenverstellbarer Greifarm: Potentiometer mit einem durch 3D-Druck speziell angefertigtem Drehrad-Aufsatz für gute Bedienbarkeit mit nur einem Daumen.',
+            'Ground- / 3,3V-Hub: Ein Hub um die Stromversorgung zentral für alle Bauteile bereitzustellen und Kabel zu sparen.'
+        ],
+        'interface-section6-title': 'Usertesting 2',
+        'interface-section6-text': 'Nachdem uns die Optimierung unseres Konzepts, basierend auf der konstruktiven Kritik der HfG Studierenden und den aus dem Testing gezogenen Erkenntnissen, weitgehend gelungen war, hatten wir die Möglichkeit mit Repräsentanten unserer tatsächlichen Zielgruppe (5. Klässler einer Realschule) einen weiteren Usertest durchführen zu können. Dabei erhielten wir weitere wichtige Erkenntnisse – sowohl was die Form als auch die visuelle Gestaltung anging.',
+        'interface-section7-title': 'Finales Konzept',
+        'interface-section7-text': 'Unser finales Konzept vereint eine spielerische Form mit Ergonomie und Funktionalität. Die Platzierung der Bauteile wurde so verändert, dass eine Zweiteilung der Funktionen – zum Einen die Steuerung des Roboters selbst, zum Anderen für die Interaktion mit dem Greifarm – erfolgt. Diese räumliche Aufteilung spiegelt sich auch in der visuellen Gestaltung wieder.',
+        'interface-caption1': 'Steuerung des Roboters',
+        'interface-caption2': 'Bewegung des Greifarms',
+        
+        // Contact Section
+        'contact-title': 'Contact',
+        'contact-copy': 'Write me an email — I usually reply quickly.',
+        'copy-email-btn': 'Copy email',
+        'copied': 'Copied!',
+        
+        // Video fallback
+        'video-unsupported': 'Dein Browser unterstützt keine Videos.'
     }
 };
 
@@ -738,6 +935,49 @@ function applyLanguage(lang) {
     // Update projects section title(s)
     const gridTitle = document.querySelector('.grid-section .section-title');
     if (gridTitle) gridTitle.textContent = translations[lang].projectsTitle;
+
+    // Update all elements with data-translate-key attribute
+    const translatableElements = document.querySelectorAll('[data-translate-key]');
+    translatableElements.forEach(el => {
+        const key = el.getAttribute('data-translate-key');
+        if (translations[lang][key]) {
+            // Check if it's an array (for lists)
+            if (Array.isArray(translations[lang][key])) {
+                // Handle list items
+                const listItems = el.querySelectorAll('li');
+                translations[lang][key].forEach((text, index) => {
+                    if (listItems[index]) {
+                        listItems[index].textContent = text;
+                    }
+                });
+            } else {
+                el.textContent = translations[lang][key];
+            }
+        }
+    });
+
+    // Update contact section
+    const contactTitle = document.querySelector('.contact-title');
+    if (contactTitle) contactTitle.textContent = translations[lang]['contact-title'];
+    
+    const contactCopy = document.querySelector('.contact-copy');
+    if (contactCopy) contactCopy.textContent = translations[lang]['contact-copy'];
+    
+    const copyBtn = document.getElementById('copyEmailBtn');
+    if (copyBtn && !copyBtn.classList.contains('copied')) {
+        copyBtn.textContent = translations[lang]['copy-email-btn'];
+    }
+
+    // Update video unsupported messages
+    const videos = document.querySelectorAll('video source');
+    videos.forEach(source => {
+        const videoEl = source.parentElement;
+        // This updates the fallback text in video tags
+        const textNode = Array.from(videoEl.childNodes).find(node => node.nodeType === 3);
+        if (textNode) {
+            textNode.textContent = translations[lang]['video-unsupported'];
+        }
+    });
 
     // Rebuild Three.js hero text if possible
     if (typeof rebuildHeroText === 'function') {
@@ -784,10 +1024,10 @@ if (copyEmailBtn && contactEmailEl) {
         try {
             await navigator.clipboard.writeText(email);
             copyEmailBtn.classList.add('copied');
-            copyEmailBtn.textContent = 'Copied!';
+            copyEmailBtn.textContent = translations[currentLang]['copied'];
             setTimeout(() => {
                 copyEmailBtn.classList.remove('copied');
-                copyEmailBtn.textContent = 'Copy email';
+                copyEmailBtn.textContent = translations[currentLang]['copy-email-btn'];
             }, 2000);
         } catch (err) {
             // fallback for older browsers
@@ -799,10 +1039,10 @@ if (copyEmailBtn && contactEmailEl) {
             catch (e) {}
             document.body.removeChild(ta);
             copyEmailBtn.classList.add('copied');
-            copyEmailBtn.textContent = 'Copied!';
+            copyEmailBtn.textContent = translations[currentLang]['copied'];
             setTimeout(() => {
                 copyEmailBtn.classList.remove('copied');
-                copyEmailBtn.textContent = 'Copy email';
+                copyEmailBtn.textContent = translations[currentLang]['copy-email-btn'];
             }, 2000);
         }
     });

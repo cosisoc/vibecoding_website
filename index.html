@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vibe Coding — Experimental Interactions</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Scroll progress bar -->
+    <div id="scroll-progress"></div>
     <!-- Three.js r128 with working CDN -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 </head>
@@ -51,24 +53,23 @@
                 <div class="grid-image" style="background-image: url('iks/iks.foto.png');"></div>
                 <div class="grid-content">
                     <span class="grid-number">01</span>
-                    <h3>IKS</h3>
-                    <p class="grid-subtitle">Ausstellungsgestaltung</p>
+                    <h3 data-translate-key="iks-title">Interaktive Kommunikationssysteme</h3>
+                    <p class="grid-subtitle" data-translate-key="iks-subtitle">Ausstellungsgestaltung</p>
                 </div>
             </div>
             <div class="grid-item project-preview" data-color="#A8C69F" data-project="datenvisualisierung" data-target="#project-datenvisualisierung">
                 <div class="grid-image" style="background-image: url('datenvisualisierung/datenvisualisierung.foto.png');"></div>
                 <div class="grid-content">
                     <span class="grid-number">02</span>
-                    <h3>Datenvisualisierung</h3>
-                    <p class="grid-subtitle">Simulation</p>
+                    <h3 data-translate-key="dataviz-title">Datenvisualisierung</h3>
                 </div>
             </div>
             <div class="grid-item project-preview" data-color="#C3756B" data-project="interface" data-target="#project-interface">
                 <div class="grid-image" style="background-image: url('interface/interface.foto.png');"></div>
                 <div class="grid-content">
                     <span class="grid-number">03</span>
-                    <h3>Interface</h3>
-                    <p class="grid-subtitle">Interaktionsdesign</p>
+                    <h3 data-translate-key="interface-title">Interface</h3>
+                    <p class="grid-subtitle" data-translate-key="interface-subtitle">Interaktionsdesign</p>
                 </div>
             </div>
         </div>
@@ -78,29 +79,54 @@
     <section class="project-detail-section project-iks" id="project-iks" data-color="#4A5C3E">
         <div class="project-detail-container">
             <div class="project-number">01</div>
-            <h2 class="project-detail-title">IKS — Ausstellungsgestaltung</h2>
-            <p class="project-detail-subtitle">Interaktive Kunst Simulation</p>
-            
+            <h2 class="project-detail-title">Anatomy of Minds</h2>
+            <p class="project-detail-subtitle" data-translate-key="iks-detail-subtitle">Interactive Communication Systems — Vergleichende Gehirnanatomie</p>
+
             <div class="project-video-wrapper">
-                <video class="project-video" controls>
+                <video class="project-video" loop controls>
                     <source src="iks/iks.video.mp4" type="video/mp4">
                     Dein Browser unterstützt keine Videos.
                 </video>
             </div>
 
-            <div class="project-pdfs">
-                <h3 class="pdfs-title">Projekt-Dokumentation</h3>
-                <div class="pdf-viewer">
-                    <iframe src="iks/14 - First prototype.pdf" class="pdf-embed-large" id="iks-pdf"></iframe>
-                    <div class="pdf-navigation">
-                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/01 - Title Page.pdf'">Title</button>
-                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/03 - Introduction.pdf'">Introduction</button>
-                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/04 - Problem Statement & Goals (Topic).pdf'">Problem Statement</button>
-                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/12 - First Interaction Ideas.pdf'">Ideas</button>
-                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/14 - First prototype.pdf'">Prototype</button>
-                        <button class="pdf-nav-btn" onclick="document.getElementById('iks-pdf').src='iks/16 - Design Concept.pdf'">Concept</button>
+            <div class="project-content">
+
+                <div class="project-section">
+                    <p class="section-text" data-translate-key="iks-intro">
+                        „Anatomy of Minds – A Comparison Journey" ist ein interaktiver Prototyp, der die Unterschiede und Gemeinsamkeiten von Gehirnen verschiedener Arten untersucht, mit Fokus auf Anatomie, Umwelt, Intelligenz und Emotionen. Entwickelt von Cosima Bühler, María Jesús Fonseca und Yannik Stegmaier im Kurs „Interactive Communication Systems" (HfG, Wintersemester 2025-2026), vergleicht das Projekt vor allem das menschliche Gehirn mit dem der Ameise, um Intelligenzdefinitionen jenseits anthropozentrischer Sichtweisen zu beleuchten.
+                    </p>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title" data-translate-key="iks-section1-title">Projektprozess</h3>
+                    <p class="section-text" data-translate-key="iks-section1-text1">
+                        Das Projekt begann mit der Themenwahl zwischen Überschalljets und dem menschlichen Kopf, wobei letzterer aufgrund seiner breiten Möglichkeiten für interaktive Ansätze gewählt wurde. Nach Brainstorming zu Emotionen, Gehirnregionen und Artenvergleichen wurde der Fokus auf vergleichende Anatomie gelegt, da hierzu umfangreiche, zuverlässige Daten vorlagen; Emotionen wurden als Unterkategorie integriert.
+                    </p>
+                    <p class="section-text" style="margin-top: 1rem;" data-translate-key="iks-section1-text2">
+                        Recherche umfasste 3D-gedruckte Gehirnmodelle, Mindmaps und Schemata zu dominanten Emotionen und Intelligenz bei ausgewählten Tieren (z. B. Empathie beim Menschen/Elefanten, kollektive Aggression bei Ameisen, Schwarmintelligenz bei Bienen, Sozialintelligenz bei Elefanten), was zur Auswahl von Mensch und Ameise führte – aufgrund starker Kontraste in Größe, Struktur und Sozialverhalten.
+                    </p>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title" data-translate-key="iks-section2-title">Interaktionskonzept</h3>
+                    <p class="section-text" data-translate-key="iks-section2-text1">
+                        Die Interaktion erfolgt über eine spieleähnliche Tischoberfläche mit Projektion: Fünf Sensorpunkte erkennen NFC-markierte, drehbare 3D-Figuren (Mensch/Ameise) via Arduino ESP32-S3 und Rotary-Encodern. Zwei Hauptpunkte zeigen Überblicke und rotierbare 3D-Gehirne; drei Themenpunkte (Umwelt, Intelligenz, Emotionen) heben relevante Hirnareale hervor und vergleichen Aspekte wie kollektive vs. individuelle Intelligenz.
+                    </p>
+                    <p class="section-text" style="margin-top: 1rem;" data-translate-key="iks-section2-text2">
+                        Beim Platzieren einer Figur erscheinen Infos (z. B. Antennenlappen bei Ameisen für Pheromone, präfrontaler Cortex beim Menschen für Sozialverhalten); eine zweite Figur aktiviert Vergleiche. Die Steuerung ist intuitiv, nicht-linear und altersübergreifend, mit Echtzeit-Projektionen für schnelle, überforderungsfreie Lernmomente.
+                    </p>
+                    <div class="project-image-wrapper">
+                        <img src="iks/27 - Interaction - Design of the Solution.png" alt="Interaction Design" class="project-image">
                     </div>
                 </div>
+
+                <div class="project-section">
+                    <h3 class="section-title" data-translate-key="iks-section3-title">Technische Umsetzung</h3>
+                    <p class="section-text" data-translate-key="iks-section3-text">
+                        Der Tisch integriert NFC-Reader und Rotary-Encoder zu einer Tangible-basierten Interaktion. Die Kommunikation zwischen Arduino und Webseite funktioniert über eine serielle Schnittstelle (Serial Monitor), welche Positions-/Drehdaten an eine JavaScript-Website für dynamische Visualisierungen überträgt. Individuell angefertigte Illustrationen in cartoonartigem Stil mit Pacaembu-Font sorgen für zugängliche Ästhetik.
+                    </p>
+                </div>
+
             </div>
         </div>
     </section>
@@ -109,14 +135,21 @@
     <section class="project-detail-section project-datenvis" id="project-datenvisualisierung" data-color="#A8C69F">
         <div class="project-detail-container">
             <div class="project-number">02</div>
-            <h2 class="project-detail-title">Datenvisualisierung</h2>
+            <h2 class="project-detail-title" data-translate-key="dataviz-detail-title">Datenvisualisierung</h2>
             <p class="project-detail-subtitle">When Money Means Help: Tracing the Flow of Global Aid Funds (1960–2023)</p>
             
+            <div class="project-video-wrapper">
+                <video class="project-video" controls>
+                    <source src="datenvisualisierung/datenvisualisierung.video.mp4" type="video/mp4">
+                    Dein Browser unterstützt keine Videos.
+                </video>
+            </div>
+
             <div class="project-content">
                 <div class="project-section two-column">
                     <div class="section-text-block">
-                        <h3 class="section-title">Projektübersicht</h3>
-                        <p class="section-text">
+                        <h3 class="section-title" data-translate-key="dataviz-section1-title">Projektübersicht</h3>
+                        <p class="section-text" data-translate-key="dataviz-section1-text">
                             Das Projekt „When Money Means Help: Tracing the Flow of Global Aid Funds (1960–2023)" analysiert internationale Hilfsgelderströme über mehr als 60 Jahre. Es wurde von Cosima Bühler, Magali Wilhelm, Shilei Xu und Yannik Stegmaier entwickelt und nutzt OECD-Datensätze zu Entwicklungsbeihilfe.
                         </p>
                     </div>
@@ -126,8 +159,8 @@
                 </div>
 
                 <div class="project-section">
-                    <h3 class="section-title">Ziele und Forschungsfragen</h3>
-                    <p class="section-text">
+                    <h3 class="section-title" data-translate-key="dataviz-section2-title">Ziele und Forschungsfragen</h3>
+                    <p class="section-text" data-translate-key="dataviz-section2-text">
                         Das Projekt untersucht, welche Länder die meisten Hilfsgelder geben und empfangen. Es verfolgt die Frage nach der Relevanz internationaler Hilfe und deren Verteilungsmustern über über 100 Länder hinweg.
                     </p>
                     <div class="project-image-wrapper">
@@ -136,15 +169,15 @@
                 </div>
 
                 <div class="project-section">
-                    <h3 class="section-title">Datenquellen und Verarbeitung</h3>
-                    <p class="section-text">
+                    <h3 class="section-title" data-translate-key="dataviz-section3-title">Datenquellen und Verarbeitung</h3>
+                    <p class="section-text" data-translate-key="dataviz-section3-text">
                         Die Daten stammen aus zuverlässigen OECD-Quellen mit über 9 Millionen Zeilen und 2 GB CSV-Daten. Diese wurden bereinigt, standardisiert und auf wesentliche Variablen wie Spender, Empfänger, Jahr und Betrag reduziert; Top-20.000 Einträge für Spender und Empfänger wurden gefiltert.
                     </p>
                 </div>
 
                 <div class="project-section">
-                    <h3 class="section-title">Visualisierung und Design</h3>
-                    <p class="section-text">
+                    <h3 class="section-title" data-translate-key="dataviz-section4-title">Visualisierung und Design</h3>
+                    <p class="section-text" data-translate-key="dataviz-section4-text">
                         Eine kreisförmige Chord-Diagramm-Visualisierung zeigt Flüsse zwischen Top-Donor-Ländern (z. B. USA, Deutschland, Japan) und Empfängerländern (z. B. China, Äthiopien, Nigeria). Das Layout ermöglicht Interaktion durch Auswahl von Donors ('D') oder Recipients ('R'), mit Fokus auf Top-15/20 und Transparenz für überlappende Bogen.
                     </p>
                     <div class="project-image-wrapper">
@@ -153,24 +186,17 @@
                 </div>
 
                 <div class="project-section">
-                    <h3 class="section-title">Technische Herausforderungen</h3>
-                    <p class="section-text">
+                    <h3 class="section-title" data-translate-key="dataviz-section5-title">Technische Herausforderungen</h3>
+                    <p class="section-text" data-translate-key="dataviz-section5-text">
                         Entwicklungsprobleme umfassten überlappende Knoten (gelöst durch Abstands- und Transparenzanpassungen), Performance (durch Vorverarbeitung und Fokus auf Top-10-Donors) sowie Farbbalancierung (Türkisblau für Spender, Orange für Empfänger). Hover- und Klick-Funktionen heben Details hervor.
                     </p>
                 </div>
 
                 <div class="project-section">
-                    <h3 class="section-title">Erkenntnisse und Ausblick</h3>
-                    <p class="section-text">
+                    <h3 class="section-title" data-translate-key="dataviz-section6-title">Erkenntnisse und Ausblick</h3>
+                    <p class="section-text" data-translate-key="dataviz-section6-text">
                         Die Visualisierung offenbart dominante Spender wie USA und Deutschland sowie Empfänger wie Äthiopien und Bangladesch. Zukünftige Erweiterungen planen Motive hinter Hilfe (humanitär, politisch, wirtschaftlich), wirtschaftliche Entwicklung von Empfängern und erweiterte Interaktivität.
                     </p>
-                </div>
-
-                <div class="project-video-wrapper">
-                    <video class="project-video" controls>
-                        <source src="datenvisualisierung/datenvisualisierung.video.mp4" type="video/mp4">
-                        Dein Browser unterstützt keine Videos.
-                    </video>
                 </div>
             </div>
         </div>
@@ -180,22 +206,100 @@
     <section class="project-detail-section project-interface" id="project-interface" data-color="#C3756B">
         <div class="project-detail-container">
             <div class="project-number">03</div>
-            <h2 class="project-detail-title">Interface</h2>
-            <p class="project-detail-subtitle">Interaktionsdesign</p>
+            <h2 class="project-detail-title">CLUTTR</h2>
+            <p class="project-detail-subtitle" data-translate-key="interface-detail-subtitle">Interface Design — Controllerentwicklung</p>
 
-            <div class="project-pdfs">
-                <h3 class="pdfs-title">Projekt-Dokumentation</h3>
-                <div class="pdf-viewer">
-                    <iframe src="interface/01 - Deckblatt.pdf" class="pdf-embed-large" id="interface-pdf"></iframe>
-                    <div class="pdf-navigation">
-                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/01 - Deckblatt.pdf'">Deckblatt</button>
-                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/03 - Einleitung.pdf'">Einleitung</button>
-                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/04 - Der Roboter.pdf'">Roboter</button>
-                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/06 - Konzept.pdf'">Konzept</button>
-                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/16 - finales Konzept.pdf'">Finales Konzept</button>
-                        <button class="pdf-nav-btn" onclick="document.getElementById('interface-pdf').src='interface/17 - Interaktion I.pdf'">Interaktion</button>
+            <div class="project-image-top">
+                <img src="interface/image.png" alt="CLUTTR Controller 3D Render" class="project-image">
+            </div>
+
+            <div class="project-content">
+
+                <div class="project-section">
+                    <h3 class="section-title" data-translate-key="interface-section1-title">Einleitung</h3>
+                    <p class="section-text" data-translate-key="interface-section1-text">
+                        Im Fach Interface Design beschäftigten wir uns viel mit nutzerorientierter Gestaltung. Aufgabe war es passend zu einem bereitgestellten Roboter einen Controller zu entwickeln.
+                        Die Funktionen des Roboters waren ebenfalls schon vorgegeben und galten bei der Gestaltung des Controllers zu beachten. Der Einsatzbereich und die daran gebundene Zielgruppe durften gruppenintern festgelegt und ausgearbeitet werden.
+                    </p>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title" data-translate-key="interface-section2-title">Konzept</h3>
+                    <p class="section-text" data-translate-key="interface-section2-text">
+                        Das grundliegende Konzept bestand aus der Entwicklung eines Controllers der sich perfekt für den Einsatz im Kinderalltag eignet.
+                        Dafür wollten wir die Funktionen des Roboters nutzen, um Kindern den Aufräumprozess zu erleichtern und aus einer nichtgemochten Aufgabe ein spielerisches Erlebnis zu gestalten.
+                    </p>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title" data-translate-key="interface-section3-title">Ideenfindung</h3>
+                    <div class="project-image-wrapper">
+                        <img src="interface/image copy.png" alt="Ideenfindung Skizzen" class="project-image">
                     </div>
                 </div>
+
+                <div class="project-section">
+                    <h3 class="section-title" data-translate-key="interface-section4-title">Usertesting</h3>
+                    <p class="section-text" data-translate-key="interface-section4-text">
+                        Um die von uns konzeptionierte Idee zu testen, wandten wir uns an Studierende der HfG Schwäbisch Gmünd.
+                        Dabei fragten wir unter Anderem nach Vorerfahrungen mit Controllern, der Verständlichkeit der Funktionen, sowie der Ersichtlichkeit aller Bauteile. Das Fachwissen der Studierenden half uns bei der weiteren Optimierung unseres Konzepts ungemein.
+                    </p>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title" data-translate-key="interface-section5-title">Technische Umsetzung</h3>
+                    <ul class="section-list" data-translate-key="interface-section5-list">
+                        <li>Fortbewegung: Ein Joycon mit zwei Walzen um die zwei verschieden gemappten Achsen visuell unterschieden zu können.</li>
+                        <li>Crabwalk: Zwei Buttons in einem speziell angefertigtem 3D-gedruckten Gehäuse um Verrutschen oder Herausbrechen vorzubeugen.</li>
+                        <li>Slowmodus: Ein On/Off-Switch um die Aktivität des Slowmodus visuell ersichtlich zu machen.</li>
+                        <li>Greifer: Ein Limit-Switch um die natürliche Bewegung des Greifens in den Controller zu integrieren.</li>
+                        <li>Höhenverstellbarer Greifarm: Potentiometer mit einem durch 3D-Druck speziell angefertigtem Drehrad-Aufsatz für gute Bedienbarkeit mit nur einem Daumen.</li>
+                        <li>Ground- / 3,3V-Hub: Ein Hub um die Stromversorgung zentral für alle Bauteile bereitzustellen und Kabel zu sparen.</li>
+                    </ul>
+                    <div class="project-image-wrapper">
+                        <img src="interface/image copy 2.png" alt="Technische Zeichnung Vorder- und Rückseite" class="project-image">
+                    </div>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title" data-translate-key="interface-section6-title">Usertesting 2</h3>
+                    <p class="section-text" data-translate-key="interface-section6-text">
+                        Nachdem uns die Optimierung unseres Konzepts, basierend auf der konstruktiven Kritik der HfG Studierenden und den aus dem Testing gezogenen Erkenntnissen, weitgehend gelungen war, hatten wir die Möglichkeit mit Repräsentanten unserer tatsächlichen Zielgruppe (5. Klässler einer Realschule) einen weiteren Usertest durchführen zu können. Dabei erhielten wir weitere wichtige Erkenntnisse – sowohl was die Form als auch die visuelle Gestaltung anging.
+                    </p>
+                </div>
+
+                <div class="project-section">
+                    <h3 class="section-title" data-translate-key="interface-section7-title">Finales Konzept</h3>
+                    <p class="section-text" data-translate-key="interface-section7-text">
+                        Unser finales Konzept vereint eine spielerische Form mit Ergonomie und Funktionalität. Die Platzierung der Bauteile wurde so verändert, dass eine Zweiteilung der Funktionen – zum Einen die Steuerung des Roboters selbst, zum Anderen für die Interaktion mit dem Greifarm – erfolgt. Diese räumliche Aufteilung spiegelt sich auch in der visuellen Gestaltung wieder.
+                    </p>
+                    <div class="project-image-wrapper">
+                        <img src="interface/image copy 3.png" alt="Steuerung des Roboters" class="project-image">
+                    </div>
+                    <p class="section-caption" data-translate-key="interface-caption1">Steuerung des Roboters</p>
+                    <div class="project-image-wrapper">
+                        <img src="interface/image copy 4.png" alt="Bewegung des Greifarms" class="project-image">
+                    </div>
+                    <p class="section-caption" data-translate-key="interface-caption2">Bewegung des Greifarms</p>
+                    <div class="project-image-grid">
+                        <div class="project-image-wrapper">
+                            <img src="interface/image copy 5.png" alt="Roboter Vorderansicht" class="project-image">
+                        </div>
+                        <div class="project-image-wrapper">
+                            <img src="interface/image copy 6.png" alt="Roboter Seitenansicht" class="project-image">
+                        </div>
+                        <div class="project-image-wrapper">
+                            <img src="interface/image copy 7.png" alt="Usertesting Setup" class="project-image">
+                        </div>
+                        <div class="project-image-wrapper">
+                            <img src="interface/image copy 8.png" alt="Handprototyp" class="project-image">
+                        </div>
+                    </div>
+                    <div class="project-image-wrapper">
+                        <img src="interface/image copy 9.png" alt="Finale 3D Renders" class="project-image">
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
@@ -203,11 +307,11 @@
     <!-- Contact Section (bottom of page) -->
     <section id="contact" class="contact-section">
         <div class="contact-inner">
-            <h2 class="contact-title">Contact</h2>
-            <p class="contact-copy">Write me an email — I usually reply quickly.</p>
+            <h2 class="contact-title" data-translate-key="contact-title">Contact</h2>
+            <p class="contact-copy" data-translate-key="contact-copy">Write me an email — I usually reply quickly.</p>
             <div class="contact-row">
                 <span class="contact-email" id="contactEmail">09daube.ding@icloud.com</span>
-                <button id="copyEmailBtn" class="copy-email-btn">Copy email</button>
+                <button id="copyEmailBtn" class="copy-email-btn" data-translate-key="copy-email-btn">Copy email</button>
             </div>
         </div>
     </section>

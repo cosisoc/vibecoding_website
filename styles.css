@@ -376,6 +376,7 @@ html {
 .hero-content {
     text-align: center;
     z-index: 2;
+    width: 100%;
 }
 
 .hero-title {
@@ -399,8 +400,6 @@ html {
 
 #threejs-hero canvas {
     display: block;
-    width: 100% !important;
-    height: 100% !important;
     margin: 0 auto;
 }
 
@@ -502,6 +501,52 @@ html {
 }
 
 /* ====================================
+   SCROLL PROGRESS BAR
+   ==================================== */
+#scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    z-index: 9999;
+    transition: width 0.1s linear;
+}
+
+/* ====================================
+   SCROLL REVEAL BASE STATES
+   ==================================== */
+.grid-section .section-title {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(30px);
+    transition: clip-path 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.grid-section .section-title.revealed {
+    clip-path: inset(0 0 0% 0);
+    transform: translateY(0);
+}
+
+.grid-item.scroll-hidden {
+    opacity: 0;
+    transform: translateY(70px) scale(0.97);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.grid-item.scroll-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* stagger delays */
+.grid-item:nth-child(1).scroll-visible { transition-delay: 0s; }
+.grid-item:nth-child(2).scroll-visible { transition-delay: 0.15s; }
+.grid-item:nth-child(3).scroll-visible { transition-delay: 0.30s; }
+
+/* ====================================
    GRID SECTION
    ==================================== */
 .grid-section {
@@ -520,8 +565,8 @@ html {
 .interactive-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    max-width: 1600px;
+    gap: 1.5rem;
+    max-width: 1100px;
     margin: 0 auto;
 }
 
@@ -529,7 +574,7 @@ html {
     aspect-ratio: 1;
     background-color: var(--color-light);
     border-radius: 20px;
-    padding: 3rem;
+    padding: 1.75rem;
     display: flex;
     align-items: flex-end;
     position: relative;
@@ -618,6 +663,47 @@ html {
 /* Removed Letter Tumble, Cube Rotation and Cards sections per request */
 
 /* ====================================
+   PROJECT DETAIL SCROLL REVEAL
+   ==================================== */
+.project-section,
+.project-video-wrapper,
+.project-pdfs,
+.project-detail-title,
+.project-detail-subtitle {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-section.is-visible,
+.project-video-wrapper.is-visible,
+.project-pdfs.is-visible,
+.project-detail-title.is-visible,
+.project-detail-subtitle.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.project-image-wrapper {
+    overflow: hidden;
+}
+
+.project-image-wrapper img,
+.project-image-wrapper.side-image {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-image-wrapper.is-visible img,
+.project-image-wrapper.side-image.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* ====================================
    PROJECT DETAIL SECTIONS
    ==================================== */
 .project-detail-section {
@@ -659,10 +745,9 @@ html {
 }
 
 .project-detail-container {
-    /* Wider container to use more horizontal real estate */
     width: 100%;
-    max-width: 1900px;
-    padding: 0 2rem; /* small side padding so content spans more width */
+    max-width: 1100px;
+    padding: 0 2rem;
     margin: 0 auto;
     position: relative;
 }
@@ -697,7 +782,7 @@ html {
 }
 
 .project-content {
-    max-width: 1800px;
+    max-width: 960px;
     margin: 0 auto;
 }
 
@@ -726,13 +811,11 @@ html {
     font-weight: 700;
     color: var(--project-accent);
     margin-bottom: 1rem;
-    border-left: 4px solid var(--project-accent);
-    padding-left: 1.25rem;
 }
 
 .section-text {
-    font-size: 1.8rem; /* larger body text for easier reading */
-    line-height: 2.2;
+    font-size: 1.1rem;
+    line-height: 1.75;
     color: var(--color-dark);
     opacity: 0.98;
 }
@@ -745,9 +828,57 @@ html {
     border: 2px solid var(--project-accent);
 }
 
+.section-list {
+    font-size: 1.1rem;
+    line-height: 1.75;
+    color: var(--color-dark);
+    opacity: 0.98;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.section-list li {
+    margin-bottom: 0.6rem;
+}
+
+.section-caption {
+    font-size: 0.9rem;
+    color: var(--color-dark);
+    opacity: 0.55;
+    text-align: center;
+    margin-top: 0.6rem;
+    margin-bottom: 2rem;
+    letter-spacing: 0.03em;
+}
+
+.project-image-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.project-image-grid .project-image-wrapper {
+    margin-top: 0;
+}
+
+@media (max-width: 600px) {
+    .project-image-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .project-image {
     width: 100%;
     height: auto;
+    display: block;
+}
+
+.project-pdf-embed {
+    width: 100%;
+    height: 780px;
+    border: none;
     display: block;
 }
 

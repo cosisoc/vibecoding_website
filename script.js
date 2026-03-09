@@ -758,8 +758,8 @@ const translations = {
         nav: ['Projects', 'About me'],
         contact: 'Contact me',
         'mobile-notice': 'This website is optimized for desktop. For the best experience, please view on a larger screen.',
-        hero1: 'Hi I\'m Cosima',
-        hero2: 'interaction design student',
+        hero1: 'Hi im Cosima',
+        hero2: 'an interaction dessign student',
         projectsTitle: 'Projects',
         
         // About Section
@@ -840,7 +840,7 @@ const translations = {
         contact: 'Kontaktiere mich',
         'mobile-notice': 'Diese Website ist für Desktop optimiert. Für die beste Erfahrung bitte auf einem größeren Bildschirm ansehen.',
         hero1: 'Hi ich bin Cosima',
-        hero2: 'Interaktionsgestaltungs Studentin',
+        hero2: 'eine Interaktionsgestaltungs Studentin',
         projectsTitle: 'Projekte',
         
         // About Section

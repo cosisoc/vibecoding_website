@@ -755,12 +755,16 @@ const langToggleBtn = document.getElementById('langToggle');
 // Translation dictionary
 const translations = {
     EN: {
-        nav: ['Projects', 'Resume'],
+        nav: ['Projects', 'About me'],
         contact: 'Contact me',
         'mobile-notice': 'This website is optimized for desktop. For the best experience, please view on a larger screen.',
         hero1: 'Hi I\'m Cosima',
         hero2: 'interaction design student',
         projectsTitle: 'Projects',
+        
+        // About Section
+        'about-title': 'About me',
+        'about-text': 'I\'m currently studying interaction design at the HfG - Hochschule für Gestaltung in Schwäbisch Gmünd in my 3rd semester',
         
         // Grid items
         'iks-title': 'Interactive Communication Systems',
@@ -832,12 +836,16 @@ const translations = {
         'video-unsupported': 'Your browser does not support videos.'
     },
     DE: {
-        nav: ['Projekte', 'Lebenslauf'],
+        nav: ['Projekte', 'Über mich'],
         contact: 'Kontaktiere mich',
         'mobile-notice': 'Diese Website ist für Desktop optimiert. Für die beste Erfahrung bitte auf einem größeren Bildschirm ansehen.',
         hero1: 'Hi ich bin Cosima',
         hero2: 'Interaktionsgestaltungs Studentin',
         projectsTitle: 'Projekte',
+        
+        // About Section
+        'about-title': 'Über mich',
+        'about-text': 'Ich studiere gerade Interaktionsgestaltung an der HfG - Hochschule für Gestaltung in Schwäbisch Gmünd im 3. Semester',
         
         // Grid items
         'iks-title': 'Interaktive Kommunikationssysteme',
@@ -900,10 +908,10 @@ const translations = {
         'interface-caption2': 'Bewegung des Greifarms',
         
         // Contact Section
-        'contact-title': 'Contact',
-        'contact-copy': 'Write me an email — I usually reply quickly.',
-        'copy-email-btn': 'Copy email',
-        'copied': 'Copied!',
+        'contact-title': 'Kontakt',
+        'contact-copy': 'Schreib mir eine E-Mail — ich antworte normalerweise schnell.',
+        'copy-email-btn': 'E-Mail kopieren',
+        'copied': 'Kopiert!',
         
         // Video fallback
         'video-unsupported': 'Dein Browser unterstützt keine Videos.'

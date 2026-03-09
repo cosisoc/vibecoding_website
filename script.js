@@ -1057,10 +1057,39 @@ console.log('%c🎨 Vibe Coding Website ', 'background: #FF3366; color: white; f
 console.log('%cExperimental Playground loaded! Viel Spaß beim Rumspielen 🚀', 'font-size: 14px; color: #FF6B35;');
 
 // =====================================
-// PERFORMANCE: Reduce animations on mobile
+// MOBILE DEVICE DETECTION & OPTIMIZATIONS
 // =====================================
-if (window.innerWidth < 768) {
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+const isSmallScreen = window.innerWidth < 768;
+
+// Disable custom cursor on mobile/touch devices
+if (isMobile || isTouchDevice || isSmallScreen) {
     document.body.style.cursor = 'auto';
     if (cursor) cursor.style.display = 'none';
     if (cursorFollower) cursorFollower.style.display = 'none';
+    
+    // Add mobile class to body for CSS targeting
+    document.body.classList.add('mobile-device');
+}
+
+// Optimize Three.js rendering on mobile
+if (isSmallScreen && typeof heroRenderer !== 'undefined') {
+    // Lower pixel ratio for better performance
+    heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+}
+
+// Handle orientation changes
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        window.scrollTo(0, 0);
+    }, 100);
+});
+
+// Performance optimization: Reduce animations on low-end devices
+if (isMobile || isSmallScreen) {
+    // Disable auto-rotate on mobile to save battery
+    if (typeof stopAutoRotate === 'function') {
+        stopAutoRotate();
+    }
 }

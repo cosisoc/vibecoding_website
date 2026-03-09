@@ -1126,3 +1126,443 @@ html {
         --ui-font-size: 1rem;
     }
 }
+
+/* ====================================
+   ENHANCED MOBILE OPTIMIZATIONS
+   ==================================== */
+
+/* Tablet & Smaller Laptops */
+@media (max-width: 1024px) {
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .project-detail-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* Mobile Optimizations (Phones in Portrait & Landscape) */
+@media (max-width: 768px) {
+    /* Navigation: More compact, touch-friendly */
+    .nav {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+        align-items: center;
+    }
+    
+    .nav-left,
+    .nav-center,
+    .nav-right {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .nav-center {
+        gap: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .lang-toggle {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .nav-contact-btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    /* Hero Section: Optimize 3D text display */
+    .hero {
+        min-height: 60vh;
+        padding: 2rem 1rem;
+    }
+    
+    #threejs-hero {
+        width: 100%;
+        height: 50vh;
+    }
+    
+    /* Grid Section */
+    .grid-section {
+        padding: 3rem 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+        margin-bottom: 2rem;
+    }
+    
+    .interactive-grid {
+        gap: 1.5rem;
+    }
+    
+    .grid-item {
+        min-height: 280px;
+    }
+    
+    .grid-image {
+        height: 60%;
+    }
+    
+    .grid-content {
+        padding: 1.2rem;
+    }
+    
+    .grid-number {
+        font-size: 2.5rem;
+    }
+    
+    .grid-item h3 {
+        font-size: 1.3rem;
+        margin: 0.3rem 0;
+    }
+    
+    .grid-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    /* Project Detail Pages */
+    .project-detail-section {
+        padding: 3rem 1rem 2rem;
+    }
+    
+    .project-detail-container {
+        padding: 0 1rem;
+    }
+    
+    .project-number {
+        font-size: 3rem;
+        top: 0;
+        left: 1rem;
+    }
+    
+    .project-detail-title {
+        font-size: 1.8rem;
+        margin: 1rem 0 0.5rem;
+    }
+    
+    .project-detail-subtitle {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    /* Video Wrapper */
+    .project-video-wrapper {
+        margin: 2rem auto 2rem;
+        border-radius: 12px;
+        border-width: 2px;
+    }
+    
+    /* Link Button */
+    .project-link-wrapper {
+        margin: 1.5rem 0 2rem;
+        padding: 0.5rem 0;
+    }
+    
+    .project-link-btn {
+        font-size: 1rem;
+        padding: 0.7rem 1.5rem;
+        width: auto;
+        max-width: 90%;
+    }
+    
+    /* Project Content */
+    .project-content {
+        padding: 0 0.5rem;
+    }
+    
+    .project-section {
+        margin-bottom: 2.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+    
+    .section-text {
+        font-size: 0.95rem;
+        line-height: 1.65;
+        margin-bottom: 0.8rem;
+    }
+    
+    .section-list {
+        font-size: 0.9rem;
+        padding-left: 1.2rem;
+    }
+    
+    .section-list li {
+        margin-bottom: 0.8rem;
+    }
+    
+    .section-caption {
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+    
+    /* Images */
+    .project-image-wrapper {
+        margin: 1.5rem 0;
+        border-radius: 8px;
+    }
+    
+    .project-image-top {
+        margin: 1rem 0 2rem;
+        border-radius: 8px;
+    }
+    
+    .project-image-grid {
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    /* Contact Section */
+    .contact-section {
+        padding: 4rem 1.5rem;
+    }
+    
+    .contact-title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .contact-copy {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-row {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .contact-email {
+        font-size: 1.1rem;
+        word-break: break-all;
+    }
+    
+    .copy-email-btn {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+        width: auto;
+        min-width: 200px;
+    }
+}
+
+/* Small Mobile Phones (Portrait) */
+@media (max-width: 480px) {
+    :root {
+        --fs-3xl: 18px;
+        --fs-2xl: 16px;
+        --fs-xl: 15px;
+        --fs-lg: 14px;
+        --fs-md: 13px;
+        --fs-sm: 12px;
+    }
+    
+    .nav {
+        padding: 0.8rem;
+    }
+    
+    .nav-center {
+        gap: 1.5rem;
+    }
+    
+    .nav-link {
+        font-size: 0.95rem;
+    }
+    
+    .hero {
+        min-height: 50vh;
+    }
+    
+    #threejs-hero {
+        height: 40vh;
+    }
+    
+    .grid-section {
+        padding: 2rem 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .grid-item {
+        min-height: 260px;
+    }
+    
+    .grid-item h3 {
+        font-size: 1.1rem;
+    }
+    
+    .project-detail-title {
+        font-size: 1.5rem;
+    }
+    
+    .project-detail-subtitle {
+        font-size: 0.85rem;
+    }
+    
+    .project-number {
+        font-size: 2.5rem;
+    }
+    
+    .section-text {
+        font-size: 0.9rem;
+    }
+    
+    .project-link-btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+        max-width: 95%;
+    }
+    
+    .contact-title {
+        font-size: 1.75rem;
+    }
+    
+    .contact-email {
+        font-size: 1rem;
+    }
+    
+    .copy-email-btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.95rem;
+        min-width: 180px;
+    }
+}
+
+/* Landscape Mode for Small Devices */
+@media (max-width: 900px) and (orientation: landscape) {
+    .hero {
+        min-height: 70vh;
+    }
+    
+    #threejs-hero {
+        height: 60vh;
+    }
+    
+    .nav {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0.8rem 1.5rem;
+    }
+    
+    .nav-left,
+    .nav-center,
+    .nav-right {
+        width: auto;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    /* Ensure all interactive elements are touch-friendly */
+    .nav-link,
+    .nav-contact-btn,
+    .grid-item,
+    .project-link-btn,
+    .copy-email-btn {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+        touch-action: manipulation;
+    }
+    
+    /* Increase touch targets */
+    .nav-link {
+        padding: 0.5rem 0.8rem;
+    }
+    
+    .grid-item {
+        cursor: pointer;
+    }
+    
+    /* Remove hover effects on touch devices */
+    .nav-link:hover::after {
+        width: 0;
+    }
+}
+
+/* ====================================
+   MOBILE DEVICE SPECIFIC STYLES
+   ==================================== */
+.mobile-device {
+    /* Prevent text selection on interactive elements */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: text;
+}
+
+.mobile-device .nav,
+.mobile-device .grid-item,
+.mobile-device button,
+.mobile-device a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-device .cursor,
+.mobile-device .cursor-follower {
+    display: none !important;
+}
+
+/* Better scrolling on iOS */
+.mobile-device {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent zoom on double-tap for form elements */
+.mobile-device input,
+.mobile-device button,
+.mobile-device select,
+.mobile-device textarea {
+    font-size: 16px !important;
+}
+
+/* Fixed background on mobile */
+.mobile-device .bg-grid {
+    background-attachment: scroll;
+}
+
+/* Optimize grid items for touch */
+.mobile-device .grid-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mobile-device .grid-item:active {
+    transform: scale(0.98);
+}
+
+/* Better button feedback on mobile */
+.mobile-device .nav-contact-btn:active,
+.mobile-device .project-link-btn:active,
+.mobile-device .copy-email-btn:active {
+    transform: scale(0.95);
+}
+
+/* Optimize video controls for touch */
+.mobile-device .project-video {
+    max-height: 70vh;
+}
+
+/* Safe area insets for notched devices (iPhone X+) */
+@supports (padding: env(safe-area-inset-left)) {
+    .mobile-device .nav {
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
+    }
+    
+    .mobile-device .grid-section,
+    .mobile-device .project-detail-section,
+    .mobile-device .contact-section {
+        padding-left: max(1.5rem, env(safe-area-inset-left));
+        padding-right: max(1.5rem, env(safe-area-inset-right));
+    }
+}
+

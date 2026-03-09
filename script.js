@@ -794,6 +794,7 @@ const translations = {
         'dataviz-section5-text': 'Development problems included overlapping nodes (solved through distance and transparency adjustments), performance (through preprocessing and focus on top-10 donors), and color balancing (turquoise blue for donors, orange for recipients). Hover and click functions highlight details.',
         'dataviz-section6-title': 'Insights and Outlook',
         'dataviz-section6-text': 'The visualization reveals dominant donors like the USA and Germany as well as recipients like Ethiopia and Bangladesh. Future extensions plan motives behind aid (humanitarian, political, economic), economic development of recipients, and expanded interactivity.',
+        'dataviz-try-it': 'Try the interactive visualization',
         
         // Interface Project
         'interface-detail-subtitle': 'Interface Design — Controller Development',
@@ -869,6 +870,7 @@ const translations = {
         'dataviz-section5-text': 'Entwicklungsprobleme umfassten überlappende Knoten (gelöst durch Abstands- und Transparenzanpassungen), Performance (durch Vorverarbeitung und Fokus auf Top-10-Donors) sowie Farbbalancierung (Türkisblau für Spender, Orange für Empfänger). Hover- und Klick-Funktionen heben Details hervor.',
         'dataviz-section6-title': 'Erkenntnisse und Ausblick',
         'dataviz-section6-text': 'Die Visualisierung offenbart dominante Spender wie USA und Deutschland sowie Empfänger wie Äthiopien und Bangladesch. Zukünftige Erweiterungen planen Motive hinter Hilfe (humanitär, politisch, wirtschaftlich), wirtschaftliche Entwicklung von Empfängern und erweiterte Interaktivität.',
+        'dataviz-try-it': 'Interaktive Visualisierung ausprobieren',
         
         // Interface Project
         'interface-detail-subtitle': 'Interface Design — Controllerentwicklung',

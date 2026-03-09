@@ -253,6 +253,27 @@ html {
     transform: scale(1.04);
 }
 
+/* Project link button (e.g., for external project links) */
+.project-link-btn {
+    display: inline-block;
+    text-decoration: none;
+    color: var(--color-dark);
+    font-family: var(--font-body);
+    font-size: var(--fs-xl);
+    font-weight: 600;
+    padding: 0.8rem 2rem;
+    border: 2px solid var(--color-dark);
+    border-radius: 50px;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    white-space: nowrap;
+}
+
+.project-link-btn:hover {
+    background: var(--color-dark);
+    color: var(--color-white);
+    transform: scale(1.05);
+}
+
 .contact-section {
     padding: 6rem 2rem;
     background: linear-gradient(180deg, rgba(74,92,62,0.06), rgba(195,117,107,0.03));

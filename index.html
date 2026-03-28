@@ -13,7 +13,7 @@
     <!-- Three.js r128 with working CDN -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 </head>
-<body class="bg-grid">
+<body class="bg-original">
     <!-- Mobile Desktop Notice -->
     <div class="mobile-notice" id="mobileNotice">
         <p data-translate-key="mobile-notice">
@@ -57,36 +57,45 @@
 
     <!-- Interactive Grid Section -->
     <section class="grid-section" id="projects">
-        <h2 class="section-title">Projekte</h2>
+        <h2 class="section-title">Recent work</h2>
         <div class="interactive-grid">
-            <div class="grid-item project-preview" data-color="#4A5C3E" data-project="iks" data-target="#project-iks">
-                <div class="grid-image" style="background-image: url('iks/iks.foto.png');"></div>
+            <div class="grid-item project-preview has-media" data-color="#e10600" data-project="iks" data-target="#project-iks">
+                <div class="work-media" aria-hidden="true">
+                    <img src="iks/iks.foto.png" alt="" loading="lazy" decoding="async">
+                </div>
                 <div class="grid-content">
                     <span class="grid-number">01</span>
                     <h3 data-translate-key="iks-title">Interaktive Kommunikationssysteme</h3>
                     <p class="grid-subtitle" data-translate-key="iks-subtitle">Ausstellungsgestaltung</p>
                 </div>
+                <div class="grid-cta" aria-hidden="true" data-translate-key="work-cta">View work</div>
             </div>
-            <div class="grid-item project-preview" data-color="#A8C69F" data-project="datenvisualisierung" data-target="#project-datenvisualisierung">
-                <div class="grid-image" style="background-image: url('datenvisualisierung/datenvisualisierung.foto.png');"></div>
+            <div class="grid-item project-preview has-media" data-color="#e10600" data-project="datenvisualisierung" data-target="#project-datenvisualisierung">
+                <div class="work-media" aria-hidden="true">
+                    <img src="datenvisualisierung/datenvisualisierung.foto.png" alt="" loading="lazy" decoding="async">
+                </div>
                 <div class="grid-content">
                     <span class="grid-number">02</span>
                     <h3 data-translate-key="dataviz-title">Datenvisualisierung</h3>
                 </div>
+                <div class="grid-cta" aria-hidden="true" data-translate-key="work-cta">View work</div>
             </div>
-            <div class="grid-item project-preview" data-color="#C3756B" data-project="interface" data-target="#project-interface">
-                <div class="grid-image" style="background-image: url('interface/interface.foto.png');"></div>
+            <div class="grid-item project-preview has-media" data-color="#e10600" data-project="interface" data-target="#project-interface">
+                <div class="work-media" aria-hidden="true">
+                    <img src="interface/interface.foto.png" alt="" loading="lazy" decoding="async">
+                </div>
                 <div class="grid-content">
                     <span class="grid-number">03</span>
                     <h3 data-translate-key="interface-title">Interface</h3>
                     <p class="grid-subtitle" data-translate-key="interface-subtitle">Interaktionsdesign</p>
                 </div>
+                <div class="grid-cta" aria-hidden="true" data-translate-key="work-cta">View work</div>
             </div>
         </div>
     </section>
 
     <!-- Project Details: IKS -->
-    <section class="project-detail-section project-iks" id="project-iks" data-color="#4A5C3E">
+    <section class="project-detail-section project-iks" id="project-iks" data-color="#e10600">
         <div class="project-detail-container">
             <div class="project-number">01</div>
             <h2 class="project-detail-title">Anatomy of Minds</h2>
@@ -142,7 +151,7 @@
     </section>
 
     <!-- Project Details: Datenvisualisierung -->
-    <section class="project-detail-section project-datenvis" id="project-datenvisualisierung" data-color="#A8C69F">
+    <section class="project-detail-section project-datenvis" id="project-datenvisualisierung" data-color="#e10600">
         <div class="project-detail-container">
             <div class="project-number">02</div>
             <h2 class="project-detail-title" data-translate-key="dataviz-detail-title">Datenvisualisierung</h2>
@@ -221,7 +230,7 @@
     </section>
 
     <!-- Project Details: Interface -->
-    <section class="project-detail-section project-interface" id="project-interface" data-color="#C3756B">
+    <section class="project-detail-section project-interface" id="project-interface" data-color="#e10600">
         <div class="project-detail-container">
             <div class="project-number">03</div>
             <h2 class="project-detail-title">CLUTTR</h2>

@@ -2,12 +2,24 @@
    CSS VARIABLES & RESET
    ==================================== */
 :root {
-    --color-primary: #4A5C3E;
-    --color-secondary: #C3756B;
-    --color-accent: #A8C69F;
-    --color-dark: #3A4A33;
-    --color-light: #E8F0E5;
-    --color-white: #ffffff;
+    /* Bauhaus / HfG-inspired palette: black/white base + single accent */
+    --color-bg: #0a0a0a;
+    --color-surface: #111111;
+    --color-surface-2: #0f0f0f;
+    --color-text: #ffffff;
+    --color-muted: rgba(255, 255, 255, 0.72);
+    --color-border: rgba(255, 255, 255, 0.22);
+    --color-shadow: rgba(0, 0, 0, 0.55);
+    --color-accent-solid: #e10600; /* Bauhaus red */
+    --color-accent-soft: rgba(225, 6, 0, 0.10);
+
+    /* Backwards-compatible aliases used across the stylesheet */
+    --color-primary: var(--color-accent-solid);
+    --color-secondary: var(--color-accent-solid);
+    --color-accent: var(--color-accent-solid);
+    --color-dark: var(--color-text);
+    --color-light: var(--color-surface-2);
+    --color-white: var(--color-surface);
     
     --font-display: 'Helvetica Neue', Arial, sans-serif;
     --font-body: 'Helvetica Neue', Arial, sans-serif;
@@ -36,12 +48,17 @@
 
 body {
     font-family: var(--font-body);
-    background-color: var(--color-light);
-    color: var(--color-dark);
+    background-color: var(--color-bg);
+
+    color: var(--color-text);
     overflow-x: hidden;
     cursor: none; /* Custom cursor */
     position: relative;
     font-size: var(--fs-md); /* baseline body size */
+}
+
+body :where(:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6)) {
+    color: inherit;
 }
 
 /* ====================================
@@ -50,12 +67,12 @@ body {
 
 /* Style 1: Original */
 body.bg-original {
-    background-color: var(--color-light);
+    background-color: var(--color-bg);
 }
 
 /* Style 2: Animated Gradient */
 body.bg-gradient {
-    background: linear-gradient(-45deg, #f5f9f3, #e8ede6, #f0ebe8, #ebe8e6);
+    background: linear-gradient(-45deg, #fafafa, #f6f7f9, #fafafa, #f6f7f9);
     background-size: 400% 400%;
     animation: gradientShift 20s ease infinite;
 }
@@ -68,23 +85,23 @@ body.bg-gradient {
 
 /* Style 3: Geometric Grid Pattern */
 body.bg-grid {
-    background-color: var(--color-light);
+    background-color: var(--color-bg);
     background-image: 
-        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(74, 92, 62, 0.08) 39px, rgba(74, 92, 62, 0.08) 40px),
-        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(74, 92, 62, 0.08) 39px, rgba(74, 92, 62, 0.08) 40px),
-        repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(195, 117, 107, 0.05) 19px, rgba(195, 117, 107, 0.05) 20px),
-        repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(195, 117, 107, 0.05) 19px, rgba(195, 117, 107, 0.05) 20px);
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255, 255, 255, 0.10) 39px, rgba(255, 255, 255, 0.10) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255, 255, 255, 0.10) 39px, rgba(255, 255, 255, 0.10) 40px),
+        repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(255, 255, 255, 0.06) 19px, rgba(255, 255, 255, 0.06) 20px),
+        repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(255, 255, 255, 0.06) 19px, rgba(255, 255, 255, 0.06) 20px);
     background-size: 40px 40px, 40px 40px, 20px 20px, 20px 20px;
 }
 
 /* Style 4: Mesh Gradient */
 body.bg-mesh {
     background: 
-        radial-gradient(circle at 20% 30%, rgba(168, 198, 159, 0.6) 0%, transparent 40%),
-        radial-gradient(circle at 80% 20%, rgba(195, 117, 107, 0.5) 0%, transparent 40%),
-        radial-gradient(circle at 60% 80%, rgba(168, 198, 159, 0.4) 0%, transparent 40%),
-        radial-gradient(circle at 10% 70%, rgba(195, 117, 107, 0.3) 0%, transparent 40%),
-        var(--color-light);
+        radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.10) 0%, transparent 45%),
+        radial-gradient(circle at 60% 80%, rgba(37, 99, 235, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 10% 70%, rgba(37, 99, 235, 0.06) 0%, transparent 45%),
+        var(--color-bg);
     animation: meshMove 25s ease infinite alternate;
 }
 
@@ -101,7 +118,7 @@ body.bg-mesh {
 
 /* Style 5: Grain/Noise Texture */
 body.bg-grain {
-    background-color: var(--color-light);
+    background-color: var(--color-bg);
     position: relative;
 }
 
@@ -137,6 +154,8 @@ body.bg-grain::before {
 
 html {
     scroll-behavior: smooth;
+    /* Slightly smaller default scale (similar to one Safari zoom-out step) */
+    font-size: 15px;
 }
 
 /* ====================================
@@ -145,7 +164,7 @@ html {
 .cursor {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--color-primary);
+    border: 2px solid var(--color-text);
     border-radius: 50%;
     position: fixed;
     pointer-events: none;
@@ -156,10 +175,18 @@ html {
     opacity: 0;
 }
 
+/* Selected state: fill cursor with signature red */
+.cursor.cursor-selected {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    mix-blend-mode: normal;
+}
+
 .cursor-follower {
+    display: none;
     width: 40px;
     height: 40px;
-    background-color: var(--color-primary);
+    background-color: var(--color-text);
     border-radius: 50%;
     position: fixed;
     pointer-events: none;
@@ -179,12 +206,12 @@ html {
     top: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(135deg, #4A5C3E 0%, #5a6d4e 100%);
-    color: #ffffff;
+    background: var(--color-surface);
+    color: var(--color-text);
     text-align: center;
     padding: 0.8rem 1rem;
     z-index: 10000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 10px rgba(11, 15, 26, 0.12);
     font-size: 0.85rem;
     line-height: 1.4;
 }
@@ -222,13 +249,14 @@ html {
     top: 0;
     left: 0;
     right: 0;
-    padding: 1.2rem 3rem;
+    padding: 1.1rem 3rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 1000;
-    background: linear-gradient(180deg, rgba(245,245,245,0.97) 0%, rgba(245,245,245,0) 100%);
-    backdrop-filter: blur(10px);
+    background: rgba(10, 10, 10, 0.92);
+    backdrop-filter: none;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .nav-left {
@@ -253,21 +281,21 @@ html {
 /* EN/GER toggle */
 .lang-toggle {
     background: none;
-    border: 1.5px solid var(--color-dark);
-    color: var(--color-dark);
+    border: 2px solid var(--color-text);
+    color: var(--color-text);
     font-family: var(--font-body);
     font-size: var(--fs-md);
     font-weight: 600;
     letter-spacing: 0.05em;
     padding: 0.35rem 0.8rem;
-    border-radius: 6px;
+    border-radius: 0px;
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease;
 }
 
 .lang-toggle:hover {
-    background: var(--color-dark);
-    color: var(--color-white);
+    background: var(--color-text);
+    color: #0a0a0a;
 }
 
 /* Ensure buttons and interactive controls have clear visual hierarchy */
@@ -280,20 +308,20 @@ html {
 /* Contact me pill button */
 .nav-contact-btn {
     text-decoration: none;
-    color: var(--color-dark);
+    color: var(--color-text);
     font-family: var(--font-body);
     font-size: var(--fs-2xl);
     font-weight: 700;
-    padding: 0.7rem 1.6rem;
-    border: 1.5px solid var(--color-dark);
-    border-radius: 50px;
+    padding: 0.7rem 1.4rem;
+    border: 2px solid var(--color-text);
+    border-radius: 0px;
     transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
     white-space: nowrap;
 }
 
 .nav-contact-btn:hover {
-    background: var(--color-dark);
-    color: var(--color-white);
+    background: var(--color-text);
+    color: #0a0a0a;
     transform: scale(1.04);
 }
 
@@ -308,17 +336,15 @@ html {
 .project-link-btn {
     display: inline-block;
     text-decoration: none;
-    color: #1a1a1a;
-    color: var(--color-dark);
+    color: var(--color-text);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-family: var(--font-body);
     font-size: 1.125rem;
     font-size: var(--fs-xl);
     font-weight: 600;
     padding: 0.8rem 2rem;
-    border: 2px solid #1a1a1a;
-    border: 2px solid var(--color-dark);
-    border-radius: 50px;
+    border: 2px solid var(--color-text);
+    border-radius: 0px;
     background: transparent;
     transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
     white-space: nowrap;
@@ -326,18 +352,16 @@ html {
 }
 
 .project-link-btn:hover {
-    background: #1a1a1a;
-    background: var(--color-dark);
-    color: #fafafa;
-    color: var(--color-white);
+    background: var(--color-text);
+    color: #0a0a0a;
     transform: scale(1.05);
 }
 
 /* About Section */
 .about-section {
     padding: 6rem 2rem 2rem 2rem;
-    background: linear-gradient(180deg, rgba(74,92,62,0.03), rgba(195,117,107,0.06));
-    color: var(--color-dark);
+    background: transparent;
+    color: var(--color-text);
 }
 
 .about-inner {
@@ -352,11 +376,11 @@ html {
 .about-title {
     font-size: var(--fs-2xl);
     font-weight: 800;
-    color: var(--color-primary);
+    color: var(--color-text);
 }
 
 .about-text {
-    color: #666;
+    color: var(--color-muted);
     font-size: var(--fs-sm);
     text-align: center;
     max-width: 700px;
@@ -365,8 +389,8 @@ html {
 /* Contact Section */
 .contact-section {
     padding: 2rem 2rem 6rem 2rem;
-    background: linear-gradient(180deg, rgba(74,92,62,0.06), rgba(195,117,107,0.03));
-    color: var(--color-dark);
+    background: transparent;
+    color: var(--color-text);
 }
 
 .contact-inner {
@@ -381,11 +405,11 @@ html {
 .contact-title {
     font-size: var(--fs-2xl);
     font-weight: 800;
-    color: var(--color-primary);
+    color: var(--color-text);
 }
 
 .contact-copy {
-    color: #666;
+    color: var(--color-muted);
     font-size: var(--fs-sm);
 }
 
@@ -395,8 +419,9 @@ html {
     align-items: center;
     background: var(--color-white);
     padding: 10px 14px;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    border-radius: 0px;
+    border: 2px solid var(--color-text);
+    box-shadow: none;
 }
 
 .contact-email {
@@ -406,18 +431,18 @@ html {
 }
 
 .copy-email-btn {
-    background: var(--color-primary);
-    color: var(--color-white);
+    background: var(--color-text);
+    color: #0a0a0a;
     border: none;
     padding: 8px 12px;
-    border-radius: 8px;
+    border-radius: 0px;
     cursor: pointer;
     font-weight: 600;
     font-size: var(--fs-lg);
 }
 
 .copy-email-btn.copied {
-    background: var(--color-accent);
+    background: var(--color-primary);
 }
 
 .nav-link {
@@ -436,7 +461,7 @@ html {
     bottom: -5px;
     left: 0;
     width: 0;
-    height: 2px;
+    height: 3px;
     background-color: var(--color-primary);
     transition: width 0.3s var(--transition-bounce);
 }
@@ -451,6 +476,10 @@ html {
 
 /* Responsive adjustments: scale down UI sizes on small screens */
 @media (max-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+
     :root {
         --fs-3xl: 22px;
         --fs-2xl: 20px;
@@ -555,6 +584,7 @@ html {
 
 /* Floating Shapes */
 .floating-shapes {
+    display: none;
     position: absolute;
     top: 0;
     left: 0;
@@ -567,14 +597,14 @@ html {
 .shape {
     position: absolute;
     border-radius: 50%;
-    mix-blend-mode: multiply;
+    mix-blend-mode: normal;
     animation: float 20s infinite ease-in-out;
 }
 
 .shape-1 {
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(255,51,102,0.2) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0%, transparent 72%);
     top: 10%;
     left: 10%;
     animation-delay: 0s;
@@ -583,7 +613,7 @@ html {
 .shape-2 {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(255,107,53,0.2) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.06) 0%, transparent 72%);
     top: 40%;
     right: 10%;
     animation-delay: -7s;
@@ -592,7 +622,7 @@ html {
 .shape-3 {
     width: 250px;
     height: 250px;
-    background: radial-gradient(circle, rgba(247,147,30,0.2) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(225, 6, 0, 0.06) 0%, transparent 72%);
     bottom: 20%;
     left: 50%;
     animation-delay: -14s;
@@ -619,7 +649,7 @@ html {
     left: 0;
     height: 3px;
     width: 0%;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    background: var(--color-primary);
     z-index: 9999;
     transition: width 0.1s linear;
 }
@@ -660,111 +690,173 @@ html {
    GRID SECTION
    ==================================== */
 .grid-section {
-    padding: 8rem 4rem;
-    background-color: var(--color-white);
+    padding: 7rem clamp(1.5rem, 6vw, 4rem);
+    background-color: transparent;
+}
+
+/* Centered, non-fullwidth content column (like the reference) */
+.grid-section .section-title,
+.grid-section .interactive-grid {
+    width: 100%;
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .section-title {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 900;
-    text-align: center;
-    margin-bottom: 4rem;
+    font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+    font-weight: 800;
+    text-align: left;
+    margin-bottom: 2.5rem;
     letter-spacing: -0.02em;
 }
 
 .interactive-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    max-width: 1100px;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
     margin: 0 auto;
 }
 
 .grid-item {
-    aspect-ratio: 1;
-    background-color: var(--color-light);
-    border-radius: 20px;
-    padding: 1.75rem;
-    display: flex;
-    align-items: flex-end;
+    aspect-ratio: auto;
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-text);
+    border-radius: 0px;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.4s var(--transition-smooth);
+    transition: transform 0.25s var(--transition-smooth),
+                box-shadow 0.25s var(--transition-smooth),
+                border-color 0.25s var(--transition-smooth);
+}
+
+/* Media card variant (Recent work previews) */
+.grid-item.has-media {
+    background-color: var(--color-bg);
+    min-height: clamp(240px, 34vw, 380px);
+    padding: 2rem;
+    align-items: start;
+}
+
+.grid-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
 }
 
 .grid-item.active {
     border: 3px solid var(--color-primary);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.grid-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.6s var(--transition-smooth), opacity 0.4s ease;
-    z-index: 0;
-}
-
-.grid-item:hover .grid-image {
-    transform: scale(1.1);
-    opacity: 0.3;
+    box-shadow: none;
 }
 
 .grid-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--color-primary);
-    transform: scale(0);
-    border-radius: 50%;
-    transition: transform 0.6s var(--transition-bounce);
-    z-index: 0;
+    display: none;
 }
 
-.grid-item:hover::before {
-    transform: scale(2);
-    border-radius: 0;
+.grid-item.has-media::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    display: block;
+    z-index: 1;
+    background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--color-bg) 72%, transparent) 0%,
+        color-mix(in srgb, var(--color-bg) 42%, transparent) 42%,
+        color-mix(in srgb, var(--color-bg) 18%, transparent) 100%
+    );
+}
+
+.work-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.work-media img,
+.work-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .grid-content {
+    grid-column: 1;
     position: relative;
-    z-index: 1;
-    transition: color 0.3s ease;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-    color: white;
+    z-index: 2;
+    transition: color 0.25s var(--transition-smooth);
+    text-shadow: none;
+    color: var(--color-text);
 }
 
 .grid-item:hover .grid-content {
-    color: white;
-    text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.6);
+    color: var(--color-text);
+    text-shadow: none;
+}
+
+/* Keep overlay lighter but ensure readability */
+.grid-item.has-media .grid-content {
+    text-shadow: 0 10px 30px color-mix(in srgb, var(--color-bg) 85%, transparent);
+}
+
+.grid-cta {
+    grid-column: 2;
+    justify-self: end;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--color-text);
+    opacity: 0.85;
+    padding-bottom: 4px;
+    border-bottom: 3px solid var(--color-primary);
+    position: relative;
+    z-index: 2;
+}
+
+/* Button-like CTA on media cards only */
+.grid-item.has-media .grid-cta {
+    opacity: 1;
+    border-bottom: none;
+    padding: 0.55rem 0.95rem;
+    border-radius: 999px;
+    background: var(--color-text);
+    color: var(--color-bg);
+    letter-spacing: 0.06em;
+}
+
+.grid-item:hover .grid-cta {
+    opacity: 1;
 }
 
 .grid-number {
     display: block;
-    font-size: 3rem;
-    font-weight: 900;
-    opacity: 0.7;
-    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    opacity: 0.75;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.12em;
 }
 
 .grid-item h3 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 0.3rem;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
 }
 
 .grid-subtitle {
-    font-size: 1rem;
-    font-weight: 400;
-    opacity: 0.9;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--color-muted);
+    opacity: 1;
     margin: 0;
 }
 
@@ -818,8 +910,8 @@ html {
    ==================================== */
 .project-detail-section {
     padding: 8rem 2rem;
-    background-color: var(--color-white);
-    border-top: 6px solid var(--color-dark);
+    background-color: var(--color-surface);
+    border-top: 2px solid var(--color-text);
     position: relative;
     margin-top: 3rem;
     display: none;
@@ -836,22 +928,22 @@ html {
     left: 0;
     width: 100%;
     height: 6px;
-    background: linear-gradient(90deg, var(--project-accent), transparent);
+    background: var(--project-accent);
 }
 
 .project-iks {
-    --project-accent: #4A5C3E;
-    background: linear-gradient(180deg, rgba(74, 92, 62, 0.03) 0%, var(--color-white) 100%);
+    --project-accent: var(--color-primary);
+    background: var(--color-surface);
 }
 
 .project-datenvis {
-    --project-accent: #A8C69F;
-    background: linear-gradient(180deg, rgba(168, 198, 159, 0.03) 0%, var(--color-white) 100%);
+    --project-accent: var(--color-primary);
+    background: var(--color-surface);
 }
 
 .project-interface {
-    --project-accent: #C3756B;
-    background: linear-gradient(180deg, rgba(195, 117, 107, 0.03) 0%, var(--color-white) 100%);
+    --project-accent: var(--color-primary);
+    background: var(--color-surface);
 }
 
 .project-detail-container {
@@ -884,7 +976,7 @@ html {
 
 .project-detail-subtitle {
     font-size: clamp(1.4rem, 2.6vw, 2.2rem);
-    color: var(--color-dark);
+    color: var(--color-muted);
     margin-bottom: 3rem;
     text-align: center;
     font-weight: 400;
@@ -916,7 +1008,8 @@ html {
     width: 100%;
 }
 
-.section-title {
+/* Project section headings (scoped so global .section-title stays neutral) */
+.project-detail-section .section-title {
     font-size: clamp(1.8rem, 2.6vw, 2.8rem);
     font-weight: 700;
     color: var(--project-accent);
@@ -926,22 +1019,22 @@ html {
 .section-text {
     font-size: 1.1rem;
     line-height: 1.75;
-    color: var(--color-dark);
+    color: var(--color-text);
     opacity: 0.98;
 }
 
 .project-image-wrapper {
     margin-top: 2rem;
-    border-radius: 16px;
+    border-radius: 0px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px var(--color-shadow);
     border: 2px solid var(--project-accent);
 }
 
 .section-list {
     font-size: 1.1rem;
     line-height: 1.75;
-    color: var(--color-dark);
+    color: var(--color-text);
     opacity: 0.98;
     padding-left: 1.5rem;
     margin-bottom: 0.5rem;
@@ -953,7 +1046,7 @@ html {
 
 .section-caption {
     font-size: 0.9rem;
-    color: var(--color-dark);
+    color: var(--color-muted);
     opacity: 0.55;
     text-align: center;
     margin-top: 0.6rem;
@@ -997,7 +1090,7 @@ html {
     margin: 1.5rem 0 3rem;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    box-shadow: 0 12px 40px var(--color-shadow);
 }
 
 .project-image-top .project-image {
@@ -1036,9 +1129,9 @@ html {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto 5rem;
-    border-radius: 20px;
+    border-radius: 0px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 18px 50px var(--color-shadow);
     border: 3px solid var(--project-accent);
 }
 
@@ -1069,8 +1162,8 @@ html {
     width: 100%;
     height: 800px;
     border: 3px solid var(--project-accent);
-    border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 0px;
+    box-shadow: 0 15px 40px var(--color-shadow);
     display: block;
 }
 
@@ -1081,8 +1174,9 @@ html {
     justify-content: center;
     margin-top: 2rem;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 12px;
+    background: transparent;
+    border-radius: 0px;
+    border: 2px solid var(--color-text);
 }
 
 .pdf-nav-btn {
@@ -1090,18 +1184,18 @@ html {
     background: var(--project-accent);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 0px;
     font-family: var(--font-body);
     font-size: var(--fs-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
 }
 
 .pdf-nav-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 16px var(--color-shadow);
     filter: brightness(1.1);
 }
 
@@ -1117,19 +1211,12 @@ html {
 .nav-link,
 .lang-toggle,
 .nav-contact-btn,
-.section-title,
-.grid-number,
-.grid-item h3,
-.grid-subtitle,
-.project-detail-title,
-.project-detail-subtitle,
 .card-info,
 .card-info h3,
-.contact-title,
 .about-text,
 .contact-copy,
-    .contact-email,
-    .copy-email-btn {
+.contact-email,
+.copy-email-btn {
      font-size: var(--ui-font-size) !important;
      line-height: 1.2;
 }
@@ -1139,11 +1226,15 @@ html {
    ==================================== */
 @media (max-width: 1024px) {
     .interactive-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+
     .nav {
         padding: 1.5rem 2rem;
     }
@@ -1185,6 +1276,18 @@ html {
     
     .interactive-grid {
         grid-template-columns: 1fr;
+    }
+
+    .grid-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1.25rem;
+    }
+
+    .grid-cta {
+        grid-column: 1;
+        justify-self: start;
+        margin-top: 0.5rem;
     }
     
     body {

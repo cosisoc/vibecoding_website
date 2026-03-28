@@ -55,20 +55,24 @@ document.addEventListener('mouseup', () => {
 const hoverElements = document.querySelectorAll('a, .grid-item, .project-card');
 hoverElements.forEach(el => {
     el.addEventListener('mouseenter', () => {
+        const isSelectedProject = el.classList.contains('grid-item') && el.classList.contains('active');
+        cursor.classList.toggle('cursor-selected', isSelectedProject);
         cursor.style.transform = 'translate(-50%, -50%) scale(2)';
         cursor.style.borderWidth = '1px';
         cursorFollower.style.transform = 'translate(-50%, -50%) scale(1.5)';
     });
     
     el.addEventListener('mouseleave', () => {
+        cursor.classList.remove('cursor-selected');
         cursor.style.transform = 'translate(-50%, -50%) scale(1)';
         cursor.style.borderWidth = '2px';
         cursorFollower.style.transform = 'translate(-50%, -50%) scale(1)';
     });
 });
 
-// Background: grid is the default, switcher removed
-document.body.classList.add('bg-grid');
+// Background: minimal default
+document.body.classList.add('bg-original');
+document.body.classList.remove('bg-grid');
 
 // =====================================
 // INTERACTIVE GRID COLORS
@@ -77,6 +81,13 @@ const gridItems = document.querySelectorAll('.grid-item');
 
 gridItems.forEach(item => {
     const color = item.dataset.color;
+
+    function pauseSectionVideos(section) {
+        const videos = section.querySelectorAll('video');
+        videos.forEach(video => {
+            video.pause();
+        });
+    }
     
     item.addEventListener('mouseenter', () => {
         item.style.setProperty('--hover-color', color);
@@ -90,8 +101,9 @@ gridItems.forEach(item => {
     item.addEventListener('click', () => {
         const targetId = item.dataset.target;
         if (targetId) {
-            // Hide all project sections
-            document.querySelectorAll('.project-detail-section').forEach(section => {
+            // Hide active project sections and pause their videos
+            document.querySelectorAll('.project-detail-section.active').forEach(section => {
+                pauseSectionVideos(section);
                 section.classList.remove('active');
             });
             
@@ -105,6 +117,9 @@ gridItems.forEach(item => {
             if (targetSection) {
                 targetSection.classList.add('active');
                 item.classList.add('active');
+
+                // Cursor selected state (user is clicking the active card)
+                cursor.classList.add('cursor-selected');
                 
                 // Scroll to the project section smoothly
                 setTimeout(() => {
@@ -334,7 +349,7 @@ const heroContainer = document.getElementById('threejs-hero');
 
 if (heroContainer && typeof THREE !== 'undefined') {
     // Only these words should respond to hover/rotation
-    const interactiveWords = new Set(['cosima', 'interaction', 'design', 'interaktionsgestaltungs']);
+    const interactiveWords = new Set(['interaction', 'design', 'interaktionsgestaltungs']);
     // Scene setup
     const heroScene = new THREE.Scene();
     
@@ -375,6 +390,62 @@ if (heroContainer && typeof THREE !== 'undefined') {
     const heroLetterMeshes = [];
     const text1 = 'Hi im Cosima';
     const spacing1 = 5.5;
+
+    // One-time intro: type-on + spin-in
+    let heroIntroPlayed = false;
+    const heroIntroConfig = {
+        letterDelayMs: 75,
+        wordExtraDelayMs: 160,
+        durationMs: 520
+    };
+
+    function setMeshOpacity(mesh, opacity) {
+        const mat = mesh.material;
+        if (Array.isArray(mat)) {
+            mat.forEach(m => {
+                m.transparent = true;
+                m.opacity = opacity;
+            });
+        } else if (mat) {
+            mat.transparent = true;
+            mat.opacity = opacity;
+        }
+    }
+
+    function prepareHeroIntro({ play }) {
+        const startMs = performance.now();
+
+        let cursorMs = 0;
+        let prevWord = null;
+        heroLetterMeshes.forEach((mesh, idx) => {
+            const ud = mesh.userData || (mesh.userData = {});
+            const word = (ud.word || '').toString();
+
+            if (prevWord !== null && word && word !== prevWord) {
+                cursorMs += heroIntroConfig.wordExtraDelayMs;
+            }
+            prevWord = word;
+
+            ud.intro = {
+                enabled: Boolean(play),
+                done: !play,
+                startMs: startMs + cursorMs,
+                durationMs: heroIntroConfig.durationMs,
+                index: idx
+            };
+
+            if (play) {
+                mesh.visible = false;
+                setMeshOpacity(mesh, 0);
+                mesh.rotation.set(0, 0, 0);
+            } else {
+                mesh.visible = true;
+                setMeshOpacity(mesh, 1);
+            }
+
+            cursorMs += heroIntroConfig.letterDelayMs;
+        });
+    }
     
     // Load font and prepare hero text builder
     const heroLoader = new THREE.FontLoader();
@@ -466,7 +537,7 @@ if (heroContainer && typeof THREE !== 'undefined') {
                         textGeometry.center();
 
                         const material = new THREE.MeshStandardMaterial({
-                            color: color,
+                            color: 0xffffff,
                             roughness: 0.4,
                             metalness: 0.1
                         });
@@ -507,6 +578,10 @@ if (heroContainer && typeof THREE !== 'undefined') {
 
             createTextLine(heroText1, 3, 0x4A5C3E, 5);
             createTextLine(heroText2, -3, 0xC3756B, 3.5);
+
+            // Intro animation should only play on first load
+            prepareHeroIntro({ play: !heroIntroPlayed });
+            heroIntroPlayed = true;
         };
 
         // Build initial hero text (default language)
@@ -548,6 +623,9 @@ if (heroContainer && typeof THREE !== 'undefined') {
         if (intersects.length > 0) {
             const hoveredMesh = intersects[0].object;
 
+            // Ignore letters that are still in the intro animation
+            if (hoveredMesh.userData?.intro?.enabled && !hoveredMesh.userData.intro.done) return;
+
             // Only allow rotation for explicitly interactive words (substring match)
             const wl = (hoveredMesh.userData.wordLower || '').toLowerCase();
             const allowed = Array.from(interactiveWords).some(k => wl.includes(k));
@@ -570,7 +648,13 @@ if (heroContainer && typeof THREE !== 'undefined') {
                     hoveredMesh.userData.rotationTarget = hoveredMesh.rotation.x + Math.PI * 2 * -Math.sign(deltaY);
                 }
                 // hover rotations are a bit snappier
-                hoveredMesh.userData.rotationSpeed = 0.02;
+                // make hover rotations snappier across the board
+                const hoverBaseSpeed = 0.06;
+                if ((wl || '').includes('jan')) {
+                    hoveredMesh.userData.rotationSpeed = 0.12; // extra fast for 'jan'
+                } else {
+                    hoveredMesh.userData.rotationSpeed = hoverBaseSpeed;
+                }
                 hoveredMesh.userData.rotationProgress = 0;
             }
         }
@@ -578,12 +662,72 @@ if (heroContainer && typeof THREE !== 'undefined') {
         heroPrevMouseX = heroMouse.x;
         heroPrevMouseY = heroMouse.y;
     });
+
+    heroContainer.addEventListener('click', (e) => {
+        const rect = heroContainer.getBoundingClientRect();
+        heroMouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        heroMouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+        heroRaycaster.setFromCamera(heroMouse, heroCamera);
+        const intersects = heroRaycaster.intersectObjects(heroLetterMeshes);
+        if (intersects.length === 0) return;
+
+        const clickedMesh = intersects[0].object;
+
+        // Ignore letters that are still in the intro animation
+        if (clickedMesh.userData?.intro?.enabled && !clickedMesh.userData.intro.done) return;
+        const wl = (clickedMesh.userData.wordLower || '').toLowerCase();
+        const allowed = Array.from(interactiveWords).some(k => wl.includes(k));
+        if (!allowed) return;
+        if (clickedMesh.userData.isRotating) return;
+
+        clickedMesh.userData.isRotating = true;
+        clickedMesh.userData.hasRotated = true;
+        clickedMesh.userData.rotationAxis = 'y';
+        clickedMesh.userData.rotationStart = clickedMesh.rotation.y;
+        clickedMesh.userData.rotationTarget = clickedMesh.rotation.y + Math.PI * 2;
+        clickedMesh.userData.rotationProgress = 0;
+        // make click spins faster
+        clickedMesh.userData.rotationSpeed = 0.12;
+    });
     
     // Animation loop
     function animateHero() {
         requestAnimationFrame(animateHero);
+
+        const nowMs = performance.now();
         
         heroLetterMeshes.forEach((mesh) => {
+            const ud = mesh.userData || {};
+
+            // Intro: type-on + rotate-in (per letter)
+            if (ud.intro && ud.intro.enabled && !ud.intro.done) {
+                const { startMs, durationMs } = ud.intro;
+                if (nowMs < startMs) {
+                    mesh.visible = false;
+                    return;
+                }
+
+                mesh.visible = true;
+                const t = Math.min(1, Math.max(0, (nowMs - startMs) / durationMs));
+                const eased = t < 0.5
+                    ? 4 * t * t * t
+                    : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+                setMeshOpacity(mesh, eased);
+                // Straight intro spin (no tilt): rotate around Y only
+                mesh.rotation.y = (1 - eased) * (Math.PI * 2);
+                mesh.rotation.x = 0;
+                mesh.rotation.z = 0;
+
+                if (t >= 1) {
+                    ud.intro.done = true;
+                    setMeshOpacity(mesh, 1);
+                    mesh.rotation.set(0, 0, 0);
+                }
+                return;
+            }
+
             if (mesh.userData.isRotating) {
                 const rotSpeed = typeof mesh.userData.rotationSpeed === 'number' ? mesh.userData.rotationSpeed : 0.06;
                 mesh.userData.rotationProgress += rotSpeed;
@@ -642,7 +786,7 @@ if (heroContainer && typeof THREE !== 'undefined') {
     // AUTO-ROTATE ON IDLE (7s) - relaxed timings
     // =====================================
     let idleTimeoutId = null;
-    const idleDelay = 7000; // 7 seconds
+    const idleDelay = 7000; // 7 seconds (restored)
     let isAutoRotating = false;
     let autoSeqTimer = null;
 
@@ -662,7 +806,7 @@ if (heroContainer && typeof THREE !== 'undefined') {
                 ud.rotationStart = m.rotation.y;
                 ud.rotationTarget = (ud.autoOrig !== undefined) ? ud.autoOrig : ud.rotation.y;
                 ud.rotationProgress = 0;
-                ud.rotationSpeed = 0.12; // quick return
+                ud.rotationSpeed = 0.12; // quick return (restored)
                 ud.isRotating = true;
                 // keep isAuto true until return finishes (animate loop clears it)
             } else {
@@ -686,11 +830,20 @@ if (heroContainer && typeof THREE !== 'undefined') {
             // If we've completed a full pass, wait a longer pause then restart
             if (idx >= heroLetterMeshes.length) {
                 idx = 0;
-                autoSeqTimer = setTimeout(step, 4000); // 4s pause after full caption
+                autoSeqTimer = setTimeout(step, 4000); // 4s pause after full caption (restored)
                 return;
             }
 
             const mesh = heroLetterMeshes[idx];
+
+            // Only auto-rotate words that are also interactive (same rule as hover/click)
+            const wl = (mesh.userData.wordLower || '').toLowerCase();
+            const allowed = Array.from(interactiveWords).some(k => wl.includes(k));
+            if (!allowed) {
+                idx += 1;
+                autoSeqTimer = setTimeout(step, 40);
+                return;
+            }
 
             // Skip if currently being rotated by hover
             if (!mesh.userData.isRotating) {
@@ -706,16 +859,16 @@ if (heroContainer && typeof THREE !== 'undefined') {
                 mesh.userData.rotationStart = mesh.rotation.y;
                 mesh.userData.rotationTarget = mesh.rotation.y + (Math.PI * 2 * fullSpins * direction);
                 mesh.userData.rotationProgress = 0;
-                mesh.userData.rotationSpeed = 0.06; // speed tuned for full spin
+                mesh.userData.rotationSpeed = 0.06; // restored speed for auto full spin
             }
 
             // Determine delay to next letter; longer between words
             const next = heroLetterMeshes[idx + 1];
-            let delay = 180; // ms between letters (relaxed)
+            let delay = 180; // ms between letters (restored)
             if (next) {
                 const curWord = (mesh.userData.word || '').toString();
                 const nextWord = (next.userData.word || '').toString();
-                if (curWord !== nextWord) delay = 600; // longer pause between words
+                if (curWord !== nextWord) delay = 600; // longer pause between words (restored)
             } else {
                 // end of line -> pause then will hit full-pass branch
                 delay = 600;
@@ -760,7 +913,8 @@ const translations = {
         'mobile-notice': 'This website is optimized for desktop. For the best experience, please view on a larger screen.',
         hero1: 'Hi im Cosima',
         hero2: 'an interaction dessign student',
-        projectsTitle: 'Projects',
+        projectsTitle: 'Recent work',
+        'work-cta': 'View work',
         
         // About Section
         'about-title': 'About me',
@@ -841,7 +995,8 @@ const translations = {
         'mobile-notice': 'Diese Website ist für Desktop optimiert. Für die beste Erfahrung bitte auf einem größeren Bildschirm ansehen.',
         hero1: 'Hi ich bin Cosima',
         hero2: 'eine Interaktionsgestaltungs Studentin',
-        projectsTitle: 'Projekte',
+        projectsTitle: 'Recent projects',
+        'work-cta': 'Zum Projekt',
         
         // About Section
         'about-title': 'Über mich',
